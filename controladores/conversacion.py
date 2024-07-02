@@ -8,6 +8,7 @@ from modelos.models import db, Usuario, Vehiculo, Servicio, Slot, Reserva, Regis
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Blueprint, request, jsonify
+from openai.error import OpenAIError, RateLimitError
 
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('OPENAI_API_KEY')
@@ -46,7 +47,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(mes
 def interactuar_con_openai(consulta):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo",  # Cambia a "gpt-4" si tienes acceso a ese modelo
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": consulta}
@@ -55,12 +56,13 @@ def interactuar_con_openai(consulta):
             temperature=0.5,
         )
         return response.choices[0].message['content'].strip()
-    except openai.error.RateLimitError:
+    except RateLimitError:
         logging.error("Se ha superado el límite de solicitudes a OpenAI.")
         return "❌ **Lo siento, hemos superado nuestro límite de solicitudes por ahora. Por favor, intenta de nuevo más tarde.**"
-    except openai.error.OpenAIError as e:
+    except OpenAIError as e:
         logging.error(f"Error interacting with OpenAI: {e}")
         return "❌ **Ha ocurrido un error al interactuar con OpenAI. Por favor, intenta de nuevo más tarde.**"
+
 
 # Función para registrar interacciones
 def registrar_interaccion(usuario_id, mensaje_usuario, respuesta_bot, es_exitosa):
