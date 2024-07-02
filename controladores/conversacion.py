@@ -46,7 +46,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(mes
 def interactuar_con_openai(consulta):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Cambia a "gpt-4" si tienes acceso a ese modelo
+            model="gpt-4",  # Cambia a "gpt-4" si tienes acceso a ese modelo
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": consulta}
