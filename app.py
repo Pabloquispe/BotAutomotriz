@@ -54,7 +54,7 @@ def configure_logging(app):
         file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
         file_handler.setLevel(logging.INFO)
         formatter = logging.Formatter(
-            '%(asctime)s %(levellevelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
         )
         file_handler.setFormatter(formatter)
         app.logger.addHandler(file_handler)
