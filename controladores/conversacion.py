@@ -39,7 +39,7 @@ conversation_state = {
     "password_confirmacion": None
 }
 
-# Función para interactuar con OpenAI
+
 # Configuración de logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 
