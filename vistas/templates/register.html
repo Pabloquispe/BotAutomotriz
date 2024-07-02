@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="text-center mt-4">Registro</h2>
+        <form action="{{ url_for('auth.register') }}" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" class="form-control" name="nombre" id="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="apellido">Apellido:</label>
+                <input type="text" class="form-control" name="apellido" id="apellido" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" class="form-control" name="telefono" id="telefono" required>
+            </div>
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <input type="text" class="form-control" name="direccion" id="direccion" required>
+            </div>
+            <div class="form-group">
+                <label for="pais">País:</label>
+                <input type="text" class="form-control" name="pais" id="pais" required>
+            </div>
+            <div class="form-group">
+                <label for="fecha_nacimiento">Fecha de Nacimiento (AAAA-MM-DD):</label>
+                <input type="date" class="form-control" name="fecha_nacimiento" id="fecha_nacimiento" required>
+            </div>
+            <div class="form-group">
+                <label for="genero">Género:</label>
+                <select class="form-control" name="genero" id="genero" required>
+                    <option value="F">Femenino</option>
+                    <option value="M">Masculino</option>
+                    <option value="OTRO">Otro</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="marca">Marca del Vehículo:</label>
+                <input type="text" class="form-control" name="marca" id="marca" required>
+            </div>
+            <div class="form-group">
+                <label for="modelo">Modelo del Vehículo:</label>
+                <input type="text" class="form-control" name="modelo" id="modelo" required>
+            </div>
+            <div class="form-group">
+                <label for="anio">Año del Vehículo:</label>
+                <input type="number" class="form-control" name="anio" id="anio" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" class="form-control" name="password" id="password" required>
+            </div>
+            {% if 'user_role' in session and session['user_role'] == 'administrador' %}
+            <div class="form-group">
+                <label for="rol">Rol:</label>
+                <select name="rol" id="rol" class="form-control" required>
+                    <option value="usuario">Usuario</option>
+                    <option value="administrador">Administrador</option>
+                </select>
+            </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

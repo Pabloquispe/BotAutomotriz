@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Reservas{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Mis Reservas</h2>
+    {% if reservas %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Vehículo</th>
+                        <th>Servicio</th>
+                        <th>Fecha y Hora</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas %}
+                    <tr>
+                        <td>{{ reserva.id }}</td>
+                        <td>{{ reserva.vehiculo.marca }} {{ reserva.vehiculo.modelo }} ({{ reserva.vehiculo.año }})</td>
+                        <td>{{ reserva.servicio.nombre }}</td>
+                        <td>{{ reserva.fecha_hora }}</td>
+                        <td>{{ reserva.estado }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center">No tienes reservas registradas.</p>
+    {% endif %}
+    
+</div>
+{% endblock %}

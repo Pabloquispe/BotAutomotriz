@@ -1,0 +1,322 @@
+/* Variables y Configuración Global */
+:root {
+    --primary-color: #34495e;
+    --secondary-color: #3498db;
+    --background-color: #ecf0f1;
+    --text-color: #2c3e50;
+    --header-color: #2c3e50;
+    --button-color: #3498db;
+    --button-hover-color: #2980b9;
+    --table-header-color: #2980b9;
+    --table-row-hover-color: #bdc3c7;
+    --font-family: 'Arial', sans-serif;
+}
+
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Estilos Generales */
+h1, h2, h3 {
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
+/* Estilos de Encabezado y Navegación */
+header {
+    background-color: var(--header-color);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+header h1 {
+    margin-bottom: 10px;
+}
+
+header nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+header nav ul li {
+    margin: 0 15px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+    color: var(--button-color);
+}
+
+/* Estilos de Cuerpo Principal y Secciones */
+main {
+    padding: 20px;
+}
+
+main h2 {
+    text-align: center;
+    color: var(--header-color);
+}
+
+section {
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+section:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos de Botones */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--button-color);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button:hover {
+    background-color: var(--button-hover-color);
+    transform: translateY(-2px);
+}
+
+.export-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.export-buttons a {
+    margin: 0 10px;
+}
+
+/* Estilos de Tablas */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.table th {
+    background-color: var(--table-header-color);
+    color: #fff;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.table tr:hover {
+    background-color: var(--table-row-hover-color);
+}
+
+/* Estilos del Bot */
+#bot-icon-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#bot-icon-container:hover {
+    transform: scale(1.1);
+}
+
+#bot-icon {
+    width: 100%;
+    height: 100%;
+}
+
+#chat-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 400px;
+    height: 500px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+#chat-container.hidden {
+    display: none;
+}
+
+#chat-container:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+#chat-header {
+    background-color: var(--header-color);
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#chat-header button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+#chat-header button:hover {
+    color: var(--button-hover-color);
+}
+
+#chat-window {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: var(--background-color);
+}
+
+#input-area {
+    display: flex;
+    padding: 10px;
+    background-color: #e9e9e9;
+}
+
+#input-area input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#input-area button {
+    padding: 10px;
+    background-color: var(--button-color);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#input-area button:hover {
+    background-color: var(--button-hover-color);
+    transform: translateY(-2px);
+}
+
+.user-message, .bot-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.user-message {
+    text-align: right;
+    background-color: #d1ecf1;
+    color: #0c5460;
+    align-self: flex-end;
+    font-size: 14px;
+}
+
+.bot-message {
+    text-align: left;
+    background-color: #e2e3e5;
+    color: #383d41;
+    align-self: flex-start;
+    font-size: 14px;
+    border: 1px solid #ccc;
+}
+
+/* Estilos de Pie de Página */
+footer {
+    background-color: var(--header-color);
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+    header nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .export-buttons {
+        flex-direction: column;
+    }
+
+    .export-buttons a {
+        margin-bottom: 10px;
+    }
+
+    table th,
+    table td {
+        padding: 8px;
+    }
+
+    #chat-container {
+        width: 100%;
+        height: 400px;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+    }
+}

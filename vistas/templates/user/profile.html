@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Centro Automotriz Espinoza</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3 mb-4">
+        <div class="container">
+            <h1>Perfil del Usuario</h1>
+            <nav class="nav justify-content-center">
+                <a class="nav-link text-white" href="/user/profile">Perfil</a>
+                <a class="nav-link text-white" href="/user/reservas">Mis Reservas</a>
+                <a class="nav-link text-white" href="/">Inicio</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>Bienvenido, {{ usuario.nombre }} {{ usuario.apellido }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <section>
+                            <h3>Información Personal</h3>
+                            <p><strong>Email:</strong> {{ usuario.email }}</p>
+                            <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+                            <p><strong>Dirección:</strong> {{ usuario.direccion }}</p>
+                            <p><strong>País:</strong> {{ usuario.pais }}</p>
+                            <p><strong>Fecha de Nacimiento:</strong> {{ usuario.fecha_nacimiento }}</p>
+                            <p><strong>Género:</strong> {{ usuario.genero }}</p>
+                        </section>
+
+                        
+
+                        <section class="mt-4">
+                            <h3>Acciones</h3>
+                            <a href="/user/reservas" class="btn btn-primary">Ver Mis Reservas</a>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2024 Centro Automotriz Espinoza. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/static/scripts.js"></script>
+</body>
+</html>

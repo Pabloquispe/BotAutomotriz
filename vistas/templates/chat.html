@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro Automotriz Espinoza - Chat Bot</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3 mb-4">
+        <div class="container">
+            <h1>Centro Automotriz Espinoza</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/reservas">Reservas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/clientes">Clientes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2 class="text-center mt-4">Bienvenido a nuestro centro de reservas automotriz</h2>
+        <p class="text-center">Aquí puedes gestionar todos nuestros servicios automotrices.</p>
+    </main>
+
+    <div id="bot-icon-container" class="fixed-bottom mb-4 mr-4" style="right: 20px;">
+        <img id="bot-icon" src="/static/chat_icon.png" alt="Chat Bot" onclick="toggleChat()" class="img-fluid">
+    </div>
+
+    <div id="chat-container" class="hidden fixed-bottom mb-4 ml-4" style="left: 20px;">
+        <div id="chat-header" class="bg-primary text-white p-2">
+            <h3>Centro de Servicios Automotriz Espinoza</h3>
+            <button onclick="toggleChat()" class="close text-white">X</button>
+        </div>
+        <div id="chat-window" class="border p-2"></div>
+        <div id="input-area" class="input-group p-2">
+            <input type="text" id="user-input" placeholder="Escribe un mensaje..." onkeydown="checkEnter(event)" class="form-control">
+            <div class="input-group-append">
+                <button id="send-button" onclick="sendMessage()" class="btn btn-primary">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/scripts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

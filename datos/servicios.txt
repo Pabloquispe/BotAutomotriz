@@ -1,0 +1,151 @@
+Afinamiento de motor: afinamiento de motor
+Cambio de aceite: cambio de aceite
+Revisión de frenos: revision de frenos
+Cambio de pastillas de freno: cambio de pastillas de freno
+Cambio de discos de freno: cambio de discos de freno
+Cambio de bujías: cambio de bujias
+Revisión de suspensión: revision de suspension
+Cambio de amortiguadores: cambio de amortiguadores
+Revisión de transmisión: revision de transmision
+Cambio de aceite de transmisión: cambio de aceite de transmision
+Revisión de sistema de enfriamiento: revision de sistema de enfriamiento
+Cambio de líquido refrigerante: cambio de liquido refrigerante
+Revisión de dirección asistida: revision de direccion asistida
+Cambio de aceite de dirección asistida: cambio de aceite de direccion asistida
+Revisión de sistema de escape: revision de sistema de escape
+Cambio de silenciador: cambio de silenciador
+Revisión de sistema eléctrico: revision de sistema electrico
+Cambio de batería: cambio de bateria
+Revisión de sistema de iluminación: revision de sistema de iluminacion
+Cambio de faros: cambio de faros
+Revisión de sistema de climatización: revision de sistema de climatizacion
+Recarga de aire acondicionado: recarga de aire acondicionado
+Revisión de sistema de combustible: revision de sistema de combustible
+Cambio de filtro de combustible: cambio de filtro de combustible
+Revisión de sistema de admisión: revision de sistema de admision
+Cambio de filtro de aire: cambio de filtro de aire
+Revisión de sistema de inyección: revision de sistema de inyeccion
+Limpieza de inyectores: limpieza de inyectores
+Revisión de sistema de encendido: revision de sistema electrico
+Cambio de cables de bujías: cambio de cables de bujias
+Revisión de sistema de frenos ABS: revision de sistema de frenos ABS
+Revisión de sistema de tracción: revision de sistema de traccion
+Revisión de sistema de diferencial: revision de sistema de diferencial
+Cambio de aceite de diferencial: cambio de aceite de diferencial
+Revisión de sistema de suspensión trasera: revision de sistema de suspension trasera
+Cambio de muelles de suspensión: cambio de muelles de suspension
+Revisión de sistema de transmisión automática: revision de sistema de transmision automatica
+Cambio de filtro de transmisión automática: cambio de filtro de transmision automatica
+Revisión de sistema de frenos de mano: revision de sistema de frenos de mano
+Revisión de sistema de escape trasero: revision de sistema de escape trasero
+Cambio de tubo de escape: cambio de tubo de escape
+Revisión de sistema de enfriamiento del motor: revision de sistema de enfriamiento del motor
+Cambio de termostato: cambio de termostato
+Revisión de sistema de dirección: revision de sistema de direccion
+Alineación y balanceo: alineacion y balanceo
+Revisión de sistema de carga: revision de sistema de carga
+Revisión de alternador: revision de alternador
+Revisión de sistema de arranque: revision de sistema de arranque
+Cambio de motor de arranque: cambio de motor de arranque
+Revisión de sistema de suspensión delantera: revision de sistema de suspension delantera
+Cambio de rótulas: cambio de rotulas
+Revisión de sistema de ventilación: revision de sistema de ventilacion
+Cambio de filtro de cabina: cambio de filtro de cabina
+Revisión de sistema de aire acondicionado: revision de sistema de aire acondicionado
+Revisión de sistema de climatización trasera: revision de sistema de climatizacion trasera
+Revisión de sistema de control de emisiones: revision de sistema de control de emisiones
+Cambio de sensor de oxígeno: cambio de sensor de oxigeno
+Revisión de sistema de frenado de emergencia: revision de sistema de frenado de emergencia
+Revisión de sistema de iluminación trasera: revision de sistema de iluminacion trasera
+Cambio de focos luces: cambio de focos luces 
+Revisión de sistema de encendido electrónico: revision de sistema de encendido electronico
+Cambio de módulo de encendido: cambio de modulo de encendido
+Revisión de sistema de control de tracción: revision de sistema de control de traccion
+Revisión de sistema de frenos hidráulicos: revision de sistema de frenos hidraulicos
+Revisión de sistema de frenos neumáticos: revision de sistema de frenos neumaticos
+Cambio de cilindro maestro de frenos: cambio de cilindro maestro de frenos
+Revisión de sistema de dirección hidráulica: revision de sistema de direccion hidraulica
+Revisión de sistema de dirección eléctrica: revision de sistema de direccion electrica
+Cambio de motor de dirección eléctrica: cambio de motor de direccion electrica
+Revisión de sistema de control de estabilidad: revision de sistema de control de estabilidad
+Revisión de sistema de frenos regenerativos: revision de sistema de frenos regenerativos
+Revisión de sistema de recuperación de energía: revision de sistema de recuperacion de energia
+Cambio de módulo de control de frenos: cambio de modulo de control de frenos
+Revisión de sistema de escape deportivo: revision de sistema de escape deportivo
+Instalación de sistema de escape deportivo: instalacion de sistema de escape deportivo
+Revisión de sistema de sonido: revision de sistema de sonido
+Instalación de sistema de sonido: instalacion de sistema de sonido
+Revisión de sistema de navegación: revision de sistema de navegacion
+Instalación de sistema de navegación: instalacion de sistema de navegacion
+Revisión de llantas: revision de llantas
+Instalación de sistema de comunicación: instalacion de sistema de comunicacion
+Revisión de sistema de seguridad: revision de sistema de seguridad
+Instalación de sistema de seguridad: instalacion de sistema de seguridad
+Revisión de sistema de entretenimiento: revision de sistema de entretenimiento
+Instalación de sistema de entretenimiento: instalacion de sistema de entretenimiento
+Revisión de sistema de cámara de reversa: revision de sistema de camara de reversa
+Instalación de cámara de reversa: instalacion de camara de reversa
+Revisión de sistema de sensores de estacionamiento: revision de sistema de sensores de estacionamiento
+Instalación de sensores de estacionamiento: instalacion de sensores de estacionamiento
+Revisión de sistema de climatización de asientos: revision de sistema de climatizacion de asientos
+Instalación de sistema de climatización de asientos: instalacion de sistema de climatizacion de asientos
+Revisión de sistema de suspensión neumática: revision de sistema de suspension neumatica
+Instalación de suspensión neumática: instalacion de suspension neumatica
+Revisión de motor: revision de motor
+Instalación de frenos cerámicos: instalacion de frenos ceramicos
+Revisión de sistema de iluminación LED: revision de sistema de iluminacion led
+Instalación de iluminación LED: instalacion de iluminacion led
+Revisión de sistema de inyección directa: revision de sistema de inyeccion directa
+Limpieza de sistema de inyección directa: limpieza de sistema de inyeccion directa
+Diagnóstico con escáner: diagnostico con escaner
+Revisión de sensores: revision de sensores
+Revision de sistema de plumillas limpiaparabriza: revision de sistema de plumillas limpiaparabriza
+Revisión de sistema de enfriamiento del motor: revisión de sistema de enfriamiento del motor
+Revision de asientos electricos: revision de asientos electricos
+Servicio inspeccion de planchado: servicio inspeccion de planchado
+Servicio de pintura: servicio de pintura
+Revisión de claxon bocina: revision de claxon bocina
+Revisión de luces de posesion: revisión de luces de posesion
+Revisión de luz de freno: revision de luz de freno
+Cambio revision de motor de arranque: cambio revision de motor de arranque
+Revisión de sistema eléctrico de luz alta: revision de sistema electrico de luz alta
+Diagnostico Electronico: diagnostico Electronico
+Revisión Limpieza de obturador: revisión Limpieza de obturador
+Revisión de chapa de puertas: revision de chapa de puertas
+Revisión de Chapa de Encendido: revision de chapa de encendido
+Programación de Llave con Chip Llave Perdida: programacion de llave con chip llave perdida
+Copia de Llave con Chip Clonado: copia de llave con chip clonado
+Copia de Llave sin Chip: copia de llave sin chip
+Revisión e Inspección Computadora del Motor: revision e inspeccion computadora del motor
+Revisión de Luz de Emergencia: revision de luz de emergencia
+Revisión de Sistema de Iluminación General: revision de sistema de iluminacion general
+Cambio de Cableado General: cambio de cableado general
+Revisión de Levantalunas: revision de levantalunas
+Revisión de Bota Agua de Limpiaparabrisas: revision de bota agua de limpiaparabrizas
+Revisión de Sistema de Gas GLP y GNV: revision de sistema de gas glp y gnv
+Instalación de Alarma: instalacion de alarma
+Instalación de GPS: instalacion de gps
+Instalación de Pestillos Eléctricos: instalacion de pestillos electricos
+Cambio de Flasher de Luz de Direccionales: cambio de flasher de luz de direccionales
+Revisión de Sistema de Luz de Servicio: revision de sistema de luz de servicio
+Recalibración de Tablero Digital: recalibracion de tablero digital
+Reemplazo de Bomba de Combustible: remplazo de bomba de combustible
+Revisión de Cinturón de Seguridad: revision de cinturon de seguridad
+Reparación de Lunas Eléctricas: reparacion de lunas electricas
+Instalación de Luz del Salón: instalacion de luz del salon
+Revisión de Mando de Luces: revision de mando de luces
+Reparación de Mandos de Lunas Eléctricas: reparacion de mandos de lunas electricas
+Reparación de Válvula de Control de Mínimo: reparacion de valvula control de minimo
+Reparación de Cintas de Bolsa de Aire: reparacion de cintas de bolsa de aire
+Reparación de Culata: reparacion de culata
+Reparación de Motor: reparacion de motor
+Revisión de Sensores: revision de sensores
+Diagnóstico con Escáner: diagnostico con escaner
+Tapizado de Asientos: tapizado de asientos
+Tapizado de Piso: tapizado de piso
+Instalación de Luz LED de Faros: instalacion de luz led de faros
+Revisión de Sistema de Iluminación LED y HID: revision de sistema de iluminacion led y hid
+Revisión e Inspección de Sonidos del Motor: revision e inspeccion sonidos de motor
+Toma de Compresión de Motor: toma de compresion de motor
+Instalación y Revisión de Radiador: instalacion y revision de radiador
+Revisión de Cortocircuitos: revision de cortocircuitos

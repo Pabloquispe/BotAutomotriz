@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Centro Automotriz Espinoza</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3 mb-4">
+        <div class="container">
+            <h1>Clientes - Centro Automotriz Espinoza</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.reservas') }}">Reservas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.servicios') }}">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.clientes') }}">Clientes</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2 class="text-center">Listado de Clientes</h2>
+        
+        <div class="text-center mb-4">
+            <a href="{{ url_for('admin.exportar_clientes_excel') }}" class="btn btn-success">Exportar a Excel</a>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-4">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Género</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>País</th>
+                        <th>Fecha de Registro</th>
+                        <th>Vehículo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente.id }}</td>
+                        <td>{{ cliente.nombre }} {{ cliente.apellido }}</td>
+                        <td>{{ cliente.email }}</td>
+                        <td>{{ cliente.telefono }}</td>
+                        <td>{{ cliente.direccion }}</td>
+                        <td>{{ cliente.genero }}</td>
+                        <td>{{ cliente.fecha_nacimiento }}</td>
+                        <td>{{ cliente.pais }}</td>
+                        <td>{{ cliente.fecha_registro }}</td>
+                        <td>
+                            {% for vehiculo in cliente.vehiculos %}
+                                <p><strong>Marca:</strong> {{ vehiculo.marca }}</p>
+                                <p><strong>Modelo:</strong> {{ vehiculo.modelo }}</p>
+                                <p><strong>Año:</strong> {{ vehiculo.año }}</p>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.editar_cliente', cliente_id=cliente.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                            <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmarEliminacionModal" data-cliente-id="{{ cliente.id }}">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" role="dialog" aria-labelledby="confirmarEliminacionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmarEliminacionModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este cliente?
+                </div>
+                <div class="modal-footer">
+                    <form id="eliminarClienteForm" method="post">
+                        <input type="hidden" name="cliente_id" id="cliente_id">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $('#confirmarEliminacionModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var clienteId = button.data('cliente-id');
+            var modal = $(this);
+            modal.find('#cliente_id').val(clienteId);
+            modal.find('#eliminarClienteForm').attr('action', '/admin/cliente/eliminar/' + clienteId);
+        });
+    </script>
+</body>
+</html>

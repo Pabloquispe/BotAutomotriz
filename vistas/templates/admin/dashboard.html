@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Centro Automotriz Espinoza</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .card-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .navbar {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .stats-section {
+            margin-bottom: 2rem;
+        }
+        .card-primary {
+            background-color: #5a67d8;
+            color: white;
+        }
+        .card-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .card-info {
+            background-color: #4fd1c5;
+            color: white;
+        }
+        .card-warning {
+            background-color: #f6ad55;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3 mb-4">
+        <div class="container">
+            <h1>Dashboard - Centro Automotriz Espinoza</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.reservas') }}">Reservas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.servicios') }}">Servicios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.clientes') }}">Clientes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.roles') }}">Administrar Roles</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2 class="text-center mb-4">Bienvenido, Administrador</h2>
+        <p class="text-center mb-5">Aquí puedes ver y gestionar todas las reservas, servicios y clientes.</p>
+        <section class="stats-section">
+            <h3 class="text-center mb-4">Estadísticas Rápidas</h3>
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card card-primary text-center">
+                        <div class="card-body">
+                            <h4 class="card-title">Total Reservas</h4>
+                            <p id="total-reservas" class="card-text">{{ total_reservas }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card card-info text-center">
+                        <div class="card-body">
+                            <h4 class="card-title">Total Servicios</h4>
+                            <p id="total-servicios" class="card-text">{{ total_servicios }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card card-secondary text-center">
+                        <div class="card-body">
+                            <h4 class="card-title">Total Clientes</h4>
+                            <p id="total-clientes" class="card-text">{{ total_usuarios }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card card-primary text-center">
+                        <div class="card-body">
+                            <h4 class="card-title">Total Vehículos</h4>
+                            <p id="total-vehiculos" class="card-text">{{ total_vehiculos }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card card-warning text-center">
+                        <div class="card-body">
+                            <h4 class="card-title">Servicios No Realizados</h4>
+                            <p id="total-no-realizados" class="card-text">{{ total_no_realizados }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
