@@ -276,25 +276,25 @@ def handle_message():
             session['estado'] = "solicitar_marca"
             respuesta_bot = f"Gracias. 🚗 **¿Cuál es la marca de tu vehículo?**"
             registrar_interaccion(session.get("usuario_id"), message, respuesta_bot, es_exitosa)
-            return jsonify({"message": respuesta_bot)
+            return jsonify({"message": respuesta_bot})
         else:
             respuesta_bot = "❌ **Por favor, elige una opción válida:** F para Femenino, M para Masculino, Otro."
             registrar_interaccion(session.get("usuario_id"), message, respuesta_bot, es_exitosa)
-            return jsonify({"message": respuesta_bot)
+            return jsonify({"message": respuesta_bot})
 
     elif session['estado'] == "solicitar_marca":
         session['marca'] = message.strip()
         session['estado'] = "solicitar_modelo"
         respuesta_bot = f"**Ok, ahora dime.** 🚗 **¿Cuál es el modelo de tu vehículo?**"
         registrar_interaccion(session.get("usuario_id"), message, respuesta_bot, es_exitosa)
-        return jsonify({"message": respuesta_bot)
+        return jsonify({"message": respuesta_bot})
 
     elif session['estado'] == "solicitar_modelo":
         session['modelo'] = message.strip()
         session['estado'] = "solicitar_año"
         respuesta_bot = f"**Está bien.** 🗓️ **¿Cuál es el año de tu vehículo?**"
         registrar_interaccion(session.get("usuario_id"), message, respuesta_bot, es_exitosa)
-        return jsonify({"message": respuesta_bot)
+        return jsonify({"message": respuesta_bot})
 
     elif session['estado'] == "solicitar_año":
         try:
@@ -302,7 +302,7 @@ def handle_message():
             if session['año'] > datetime.now().year:
                 respuesta_bot = "❌ **El año del vehículo no puede ser en el futuro.** Por favor, proporciona un año válido."
                 registrar_interaccion(session.get("usuario_id"), message, respuesta_bot, es_exitosa)
-                return jsonify({"message": respuesta_bot)
+                return jsonify({"message": respuesta_bot})
             nombre, apellido = session['nombre_completo'].split(" ", 1) if " " in session['nombre_completo'] else (session['nombre_completo'], "")
             session['estado'] = "solicitar_password"
             respuesta_bot = "🔒 **Por favor, proporciona una contraseña para tu cuenta.**"
@@ -318,7 +318,7 @@ def handle_message():
         session['estado'] = "confirmar_password"
         respuesta_bot = "🔒 **Por favor, confirma tu contraseña.**"
         registrar_interaccion(session.get("usuario_id"), '********', respuesta_bot, es_exitosa)
-        return jsonify({"message": respuesta_bot)
+        return jsonify({"message": respuesta_bot})
 
     elif session['estado'] == "confirmar_password":
         session['password_confirmacion'] = message.strip()
@@ -326,7 +326,7 @@ def handle_message():
             session['estado'] = "solicitar_password"
             respuesta_bot = "❌ **Las contraseñas no coinciden.** Por favor, proporciona una contraseña para tu cuenta."
             registrar_interaccion(session.get("usuario_id"), '********', respuesta_bot, es_exitosa)
-            return jsonify({"message": respuesta_bot)
+            return jsonify({"message": respuesta_bot})
 
         nombre, apellido = session['nombre_completo'].split(" ", 1) if " " in session['nombre_completo'] else (session['nombre_completo'], "")
         usuario_data = {
@@ -370,7 +370,7 @@ def handle_message():
             else:
                 respuesta_bot = "❌ **Hubo un error al registrar tu vehículo.** Por favor, intenta de nuevo."
                 registrar_interaccion(session['usuario_id'], message, respuesta_bot, es_exitosa)
-                return jsonify({"message": respuesta_bot)
+                return jsonify({"message": respuesta_bot})
         else:
             respuesta_bot = "❌ **Hubo un error al registrar tu información.** Por favor, intenta de nuevo."
             registrar_interaccion(session['usuario_id'], message, respuesta_bot, es_exitosa)
@@ -472,7 +472,7 @@ def handle_message():
             if not slot:
                 respuesta_bot = "❌ **Lo siento, no hay slots disponibles para el servicio en la fecha y hora solicitada.** Por favor, elige otra fecha u hora."
                 registrar_interaccion(session['usuario_id'], message, respuesta_bot, es_exitosa)
-                return jsonify({"message": respuesta_bot)
+                return jsonify({"message": respuesta_bot})
 
             reserva_data = {
                 'usuario_id': session['usuario_id'],
@@ -507,11 +507,11 @@ def handle_message():
             else:
                 respuesta_bot = "❌ **Hubo un error al registrar tu reserva.** Por favor, intenta de nuevo."
                 registrar_interaccion(session['usuario_id'], message, respuesta_bot, es_exitosa)
-                return jsonify({"message": respuesta_bot)
+                return jsonify({"message": respuesta_bot})
         except ValueError:
             respuesta_bot = "❌ **Formato de hora incorrecto.** Por favor, proporciona la hora para tu reserva (HH:MM)."
             registrar_interaccion(session['usuario_id'], message, respuesta_bot, es_exitosa)
-            return jsonify({"message": respuesta_bot)
+            return jsonify({"message": respuesta_bot})
 
     elif session['estado'] == "despedida":
         if message.strip().lower() in ['no', 'ninguna', 'gracias', 'nada', 'nada gracias', 'nada más']:
