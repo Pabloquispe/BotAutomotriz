@@ -50,7 +50,9 @@ def interactuar_con_openai(consulta):
             temperature=0.5,
         )
         return response.choices[0].message['content'].strip()
-    except openai.error.OpenAIError as e:
+    except openai.error.InvalidRequestError:
+        return "❌ **Lo siento, hemos superado nuestro límite de solicitudes por ahora. Por favor, intenta de nuevo más tarde.**"
+    except Exception as e:
         print(f"Error interacting with OpenAI: {e}")
         return "❌ **Ha ocurrido un error al interactuar con OpenAI. Por favor, intenta de nuevo más tarde.**"
 
@@ -65,6 +67,7 @@ def registrar_interaccion(usuario_id, mensaje_usuario, respuesta_bot, es_exitosa
     db.session.add(nueva_interaccion)
     db.session.commit()
 
+# Cargar servicios desde el archivo de texto
 # Función para preprocesar el texto
 def preprocesar_texto(texto):
     texto = texto.lower()
