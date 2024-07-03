@@ -21,6 +21,10 @@ def create_app(config_name):
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
     
+    # Configurar Flask-Session
+    app.config['SESSION_TYPE'] = 'filesystem'  # Puedes cambiar esto según tus necesidades
+    Session(app)
+
     # Verificar si la configuración de la base de datos está correcta
     if 'SQLALCHEMY_DATABASE_URI' not in app.config:
         raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
@@ -38,10 +42,6 @@ def create_app(config_name):
     db.engine = engine
 
     migrate = Migrate(app, db)
-
-    # Configurar Flask-Session
-    app.config['SESSION_TYPE'] = 'filesystem'  # Puedes cambiar esto según tus necesidades
-    Session(app)
 
     # Registrar Blueprints
     app.register_blueprint(admin_bp)
