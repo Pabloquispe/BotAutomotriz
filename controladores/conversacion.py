@@ -7,6 +7,7 @@ from modelos.models import db, Usuario, Vehiculo, Servicio, Slot, Reserva, Regis
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Blueprint, request, jsonify
+from openai.error import OpenAIError
 
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('OPENAI_API_KEY')
@@ -41,7 +42,7 @@ conversation_state = {
 def interactuar_con_openai(consulta):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": consulta}
@@ -52,12 +53,9 @@ def interactuar_con_openai(consulta):
         return response.choices[0].message['content'].strip()
     except openai.error.RateLimitError:
         return "❌ **Lo siento, hemos superado nuestro límite de solicitudes por ahora. Por favor, intenta de nuevo más tarde.**"
-    except openai.error.OpenAIError as e:
+    except OpenAIError as e:
         print(f"Error interacting with OpenAI: {e}")
         return "❌ **Ha ocurrido un error al interactuar con OpenAI. Por favor, intenta de nuevo más tarde.**"
-    except Exception as e:
-        print(f"Error interacting with OpenAI: {e}")
-        return "❌ **Ha ocurrido un error inesperado. Por favor, intenta de nuevo más tarde.**"
 
 # Función para registrar interacciones
 def registrar_interaccion(usuario_id, mensaje_usuario, respuesta_bot, es_exitosa):
@@ -70,7 +68,6 @@ def registrar_interaccion(usuario_id, mensaje_usuario, respuesta_bot, es_exitosa
     db.session.add(nueva_interaccion)
     db.session.commit()
 
-# Cargar servicios desde el archivo de texto
 # Función para preprocesar el texto
 def preprocesar_texto(texto):
     texto = texto.lower()
@@ -85,38 +82,29 @@ def cargar_servicios():
     try:
         with open('datos/servicios.txt', 'r', encoding='utf-8') as file:
             for line in file:
-                line = line.strip()
                 if ':' in line:
-                    nombre, descripcion = line.split(':', 1)
+                    nombre, descripcion = line.strip().split(':', 1)
                     servicios[preprocesar_texto(nombre.strip())] = preprocesar_texto(descripcion.strip())
                 else:
-                    print(f"Línea ignorada por formato incorrecto: {line}")
+                    print(f"Formato incorrecto en la línea: {line.strip()}")
     except FileNotFoundError:
         print("El archivo servicios.txt no fue encontrado.")
     except Exception as e:
         print(f"Error al cargar servicios: {e}")
     return servicios
 
-def preprocesar_texto(texto):
-    texto = texto.lower()
-    texto = re.sub(r'\d+', '', texto)  # Eliminar números
-    texto = re.sub(r'\s+', ' ', texto)  # Eliminar espacios adicionales
-    texto = re.sub(r'[^\w\s]', '', texto)  # Eliminar caracteres especiales
-    return texto
-
+# Función para cargar problemas y servicios
 def cargar_problemas_servicios():
     problemas_servicios = {}
     try:
         with open('datos/problemas.txt', 'r', encoding='utf-8') as file:
             for line in file:
-                line = line.strip()
-                if not line:  # Ignorar líneas en blanco
-                    continue
+                line = line.strip().lower()
                 if ':' in line:
                     problema, servicio = line.split(':', 1)
                     problemas_servicios[preprocesar_texto(problema.strip())] = preprocesar_texto(servicio.strip())
                 else:
-                    print(f"Línea ignorada por formato incorrecto: '{line}'")
+                    print(f"Línea ignorada por formato incorrecto: {line}")
     except FileNotFoundError:
         print("El archivo problemas.txt no fue encontrado.")
     except Exception as e:
@@ -125,35 +113,59 @@ def cargar_problemas_servicios():
 
 # Función para encontrar servicio basado en la consulta
 def encontrar_servicio(servicios, consulta):
-    vectorizer = TfidfVectorizer()
-    docs = list(servicios.values())
-    tfidf_matrix = vectorizer.fit_transform(docs)
-    consulta_vec = vectorizer.transform([preprocesar_texto(consulta)])
-    similarities = cosine_similarity(consulta_vec, tfidf_matrix).flatten()
-    index = similarities.argmax()
-    servicio_principal = list(servicios.keys())[index]
-    return servicio_principal, similarities[index]
+    try:
+        vectorizer = TfidfVectorizer()
+        docs = list(servicios.values())
+        tfidf_matrix = vectorizer.fit_transform(docs)
+        consulta_vec = vectorizer.transform([preprocesar_texto(consulta)])
+        similarities = cosine_similarity(consulta_vec, tfidf_matrix).flatten()
+        index = similarities.argmax()
+        servicio_principal = list(servicios.keys())[index]
+        return servicio_principal, similarities[index]
+    except Exception as e:
+        print(f"Error al encontrar servicio: {e}")
+        return None, 0
 
 # Función para encontrar problema basado en la consulta
-def encontrar_problema(problemas_servicios, consulta, umbral_similitud=0.2):
-    vectorizer = TfidfVectorizer()
-    problemas = list(problemas_servicios.keys())
-    servicios = list(problemas_servicios.values())
-
-    # Preprocesa los problemas
-    problemas_preprocesados = [preprocesar_texto(problema) for problema in problemas]
-
-    tfidf_matrix = vectorizer.fit_transform(problemas_preprocesados)
-    consulta_vec = vectorizer.transform([preprocesar_texto(consulta)])
-    similarities = cosine_similarity(consulta_vec, tfidf_matrix).flatten()
-    
-    index = similarities.argmax()
-    if similarities[index] >= umbral_similitud:
-        problema = problemas[index]
+def encontrar_problema(problemas_servicios, consulta):
+    try:
+        vectorizer = TfidfVectorizer()
+        docs = list(problemas_servicios.keys())
+        tfidf_matrix = vectorizer.fit_transform(docs)
+        consulta_vec = vectorizer.transform([preprocesar_texto(consulta)])
+        similarities = cosine_similarity(consulta_vec, tfidf_matrix).flatten()
+        index = similarities.argmax()
+        problema = list(problemas_servicios.keys())[index]
         servicio_recomendado = problemas_servicios[problema]
         return problema, servicio_recomendado, similarities[index]
-    else:
+    except Exception as e:
+        print(f"Error al encontrar problema: {e}")
         return None, None, 0
+
+@app.route('/conversacion', methods=['POST'])
+def conversacion():
+    try:
+        data = request.get_json()
+        consulta = data.get('consulta', '').strip()
+        
+        # Buscar servicio basado en la consulta
+        problema, servicio_recomendado, similitud = encontrar_problema(app.problemas_servicios, consulta)
+        
+        # Interactuar con OpenAI
+        respuesta_openai = interactuar_con_openai(consulta)
+        
+        # Registrar la interacción
+        registrar_interaccion(conversation_state["usuario_id"], consulta, respuesta_openai, True)
+        
+        return jsonify({
+            "problema": problema,
+            "servicio_recomendado": servicio_recomendado,
+            "similitud": similitud,
+            "respuesta_openai": respuesta_openai
+        })
+    except Exception as e:
+        app.logger.error(f"Error en la ruta de conversación: {e}")
+        return jsonify({"error": "Ocurrió un error al procesar la consulta"}), 500
 
 # Función para generar slots automáticamente
 def generar_slots(servicio_id, fecha_inicio, fecha_fin):
