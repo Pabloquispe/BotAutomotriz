@@ -10,6 +10,7 @@ from controladores.main_routes import main_bp
 import logging
 from logging.handlers import RotatingFileHandler
 from sqlalchemy import create_engine
+from dotenv import load_dotenv
 
 # Cargar variables de entorno
 load_dotenv()
@@ -29,7 +30,7 @@ def create_app(config_name):
         pool_size=10,
         max_overflow=20,
         pool_timeout=30,
-        pool_recycle=3600,  # Añadir este parámetro
+        pool_recycle=3600,
     )
     db.init_app(app)
     db.app = app
@@ -82,9 +83,4 @@ def configure_error_handlers(app):
     def internal_error(error):
         db.session.rollback()
         return render_template('500.html'), 500
-
-if __name__ == "__main__":
-    config_name = os.getenv('FLASK_CONFIG', 'production')  # Configuración predeterminada para producción
-    app = create_app(config_name)
-    app.run(debug=(config_name == 'development'))
 
