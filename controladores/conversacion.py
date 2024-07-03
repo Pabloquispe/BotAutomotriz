@@ -49,7 +49,7 @@ def interactuar_con_openai(consulta):
             max_tokens=150,
             temperature=0.5,
         )
-        return response.choices[0].message['content'].strip()
+        return response['choices'][0]['message']['content'].strip()
     except openai.error.RateLimitError:
         return "❌ **Lo siento, hemos superado nuestro límite de solicitudes por ahora. Por favor, intenta de nuevo más tarde.**"
     except openai.error.OpenAIError as e:
