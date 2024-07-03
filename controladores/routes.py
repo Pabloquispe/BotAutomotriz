@@ -1,95 +1,143 @@
-import os
-from flask import Flask, render_template
-from flask_migrate import Migrate
-from flask_session import Session
-from config import config_by_name
-from modelos.models import db
-from controladores.admin_routes import admin_bp
-from controladores.user_routes import user_bp
-from controladores.auth_routes import auth_bp
-from controladores.main_routes import main_bp
-from controladores.conversacion import register_routes
-import logging
-from logging.handlers import RotatingFileHandler
-from sqlalchemy import create_engine
-from dotenv import load_dotenv
+from flask import request, jsonify, render_template, current_app as app, redirect, url_for
+from modelos.models import db, Usuario, Vehiculo, Servicio, Slot, Reserva, ComentarioServicio, Repuesto
+from controladores.conversacion import handle_message, registrar_interaccion
+import traceback
 
-# Cargar variables de entorno
-load_dotenv()
+def register_routes(app):
+    @app.route('/')
+    def home():
+        return redirect(url_for('auth.login'))
 
-def create_app(config_name):
-    """Crea y configura la aplicación Flask."""
-    app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
-    app.config.from_object(config_by_name[config_name])
-    
-    # Configurar la sesión de Flask
-    app.config['SESSION_TYPE'] = 'filesystem'
-    Session(app)
-    
-    # Verificar si la configuración de la base de datos está correcta
-    if 'SQLALCHEMY_DATABASE_URI' not in app.config:
-        raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
+    @app.route('/conversacion', methods=['POST'])
+    def conversacion():
+        try:
+            user_message = request.json.get('message')
+            if not user_message:
+                # Responder con mensaje de bienvenida si el mensaje del usuario está vacío
+                respuesta_bot = "¡Hola! 👋 **Soy tu asistente para la reserva de servicios automotrices.** 🚗 ¿Cómo te puedo ayudar hoy? "
+                es_exitosa = True
+                registrar_interaccion(None, '', respuesta_bot, es_exitosa)
+                return jsonify({'message': respuesta_bot})
 
-    # Configurar el pool de conexiones
-    engine = create_engine(
-        app.config['SQLALCHEMY_DATABASE_URI'],
-        pool_size=10,
-        max_overflow=20,
-        pool_timeout=30,
-        pool_recycle=3600,
-    )
-    db.init_app(app)
-    db.app = app
-    db.engine = engine
+            bot_response = handle_message(user_message)
+            return jsonify({'message': bot_response})
+        except Exception as e:
+            error_trace = traceback.format_exc()
+            app.logger.error(f"Error en la ruta '/conversacion': {str(e)}\n{error_trace}")
+            return jsonify({'error': str(e)}), 500
 
-    migrate = Migrate(app, db)
+    @app.route('/usuarios', methods=['POST'])
+    def create_usuario():
+        data = request.get_json()
+        try:
+            new_usuario = Usuario(
+                nombre=data['nombre'],
+                apellido=data['apellido'],
+                email=data['email'],
+                telefono=data['telefono'],
+                direccion=data.get('direccion'),
+                ciudad=data.get('ciudad'),
+                profesion=data.get('profesion'),
+                pais=data.get('pais'),
+                fecha_nacimiento=data.get('fecha_nacimiento'),
+                genero=data.get('genero'),
+                preferencias_servicio=data.get('preferencias_servicio'),
+                rol=data.get('rol', 'usuario'),
+                activo=data.get('activo', True),
+                estado=data.get('estado', 'inicio')
+            )
+            
+            if 'password' in data:
+                new_usuario.set_password(data['password'])
+            db.session.add(new_usuario)
+            db.session.commit()
+            return jsonify({'message': 'Usuario creado', 'usuario': new_usuario.id})
+        except Exception as e:
+            db.session.rollback()
+            error_trace = traceback.format_exc()
+            app.logger.error(f"Error en la ruta '/usuarios': {str(e)}\n{error_trace}")
+            return jsonify({'error': str(e)}), 500
 
-    # Registrar Blueprints
-    app.register_blueprint(admin_bp)
-    app.register_blueprint(user_bp)
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(main_bp)
-    register_routes(app)
+    @app.route('/vehiculos', methods=['POST'])
+    def create_vehiculo():
+        data = request.get_json()
+        try:
+            new_vehiculo = Vehiculo(
+                usuario_id=data['usuario_id'],
+                marca=data['marca'],
+                modelo=data['modelo'],
+                año=data['año']
+            )
+            db.session.add(new_vehiculo)
+            db.session.commit()
+            return jsonify({'message': 'Vehículo creado', 'vehiculo': new_vehiculo.id})
+        except Exception as e:
+            db.session.rollback()
+            error_trace = traceback.format_exc()
+            app.logger.error(f"Error en la ruta '/vehiculos': {str(e)}\n{error_trace}")
+            return jsonify({'error': str(e)}), 500
 
-    with app.app_context():
-        db.create_all()
+    @app.route('/servicios', methods=['POST'])
+    def create_servicio():
+        data = request.get_json()
+        try:
+            new_servicio = Servicio(
+                nombre=data['nombre'],
+                descripcion=data.get('descripcion'),
+                duracion=data.get('duracion'),
+                precio=data.get('precio')
+            )
+            db.session.add(new_servicio)
+            db.session.commit()
+            return jsonify({'message': 'Servicio creado', 'servicio': new_servicio.id})
+        except Exception as e:
+            db.session.rollback()
+            error_trace = traceback.format_exc()
+            app.logger.error(f"Error en la ruta '/servicios': {str(e)}\n{error_trace}")
+            return jsonify({'error': str(e)}), 500
 
-    # Configuración de logs
-    configure_logging(app)
+    @app.route('/slots', methods=['POST'])
+    def create_slot():
+        data = request.get_json()
+        try:
+            new_slot = Slot(
+                servicio_id=data['servicio_id'],
+                fecha=data['fecha'],
+                hora_inicio=data['hora_inicio'],
+                hora_fin=data['hora_fin'],
+                reservado=data.get('reservado', False)
+            )
+            db.session.add(new_slot)
+            db.session.commit()
+            return jsonify({'message': 'Slot creado', 'slot': new_slot.id})
+        except Exception as e:
+            db.session.rollback()
+            error_trace = traceback.format_exc()
+            app.logger.error(f"Error en la ruta '/slots': {str(e)}\n{error_trace}")
+            return jsonify({'error': str(e)}), 500
 
-    # Manejo de errores personalizados
-    configure_error_handlers(app)
-
-    return app
-
-def configure_logging(app):
-    """Configura los logs de la aplicación."""
-    if not app.debug:
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
-        file_handler.setLevel(logging.INFO)
-        formatter = logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        )
-        file_handler.setFormatter(formatter)
-        app.logger.addHandler(file_handler)
-
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('Aplicación iniciada')
-
-def configure_error_handlers(app):
-    """Configura los manejadores de errores."""
-    @app.errorhandler(404)
-    def not_found_error(error):
-        return render_template('404.html'), 404
-
-    @app.errorhandler(500)
-    def internal_error(error):
-        db.session.rollback()
-        return render_template('500.html'), 500
-
-if __name__ == '__main__':
-    config_name = os.getenv('FLASK_CONFIG', 'default')
-    app = create_app(config_name)
-    app.run()
+    @app.route('/reservas', methods=['POST'])
+    def create_reserva():
+        data = request.get_json()
+        try:
+            if 'vehiculo_id' not in data or data['vehiculo_id'] is None:
+                raise ValueError("vehiculo_id no puede ser nulo")
+            
+            new_reserva = Reserva(
+                usuario_id=data['usuario_id'],
+                vehiculo_id=data['vehiculo_id'],
+                servicio_id=data['servicio_id'],
+                slot_id=data['slot_id'],
+                problema=data['problema'],
+                fecha_hora=data['fecha_hora']
+            )
+            db.session.add(new_reserva)
+            slot = Slot.query.get(data['slot_id'])
+            slot.reservado = True
+            db.session.commit()
+            return jsonify({'message': 'Reserva creada', 'reserva': new_reserva.id})
+        except Exception as e:
+            db.session.rollback()
+            error_trace = traceback.format_exc()
+            app.logger.error(f"Error en la ruta '/reservas': {str(e)}\n{error_trace}")
+            return jsonify({'error': str(e)}), 500
