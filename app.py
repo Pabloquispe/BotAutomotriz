@@ -30,14 +30,14 @@ def create_app(config_name):
     if 'SQLALCHEMY_DATABASE_URI' not in app.config:
         raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
 
-    # Configurar el pool de conexiones
-    engine = create_engine(
-        app.config['SQLALCHEMY_DATABASE_URI'],
-        pool_size=10,
-        max_overflow=20,
-        pool_timeout=30,
-        pool_recycle=3600,
-    )
+    # Configurar opciones del motor SQLAlchemy
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_size': 10,
+        'max_overflow': 20,
+        'pool_timeout': 30,
+        'pool_recycle': 3600,
+    }
+
     db.init_app(app)
     db.app = app
 
