@@ -1,17 +1,15 @@
 import os
 from flask import Flask, render_template
 from flask_migrate import Migrate
-from flask_session import Session
 from config import config_by_name
 from modelos.models import db
 from controladores.admin_routes import admin_bp
 from controladores.user_routes import user_bp
 from controladores.auth_routes import auth_bp
 from controladores.main_routes import main_bp
-from controladores.conversacion import register_routes
+from controladores.routes import register_routes  # Asegúrate de que la ruta es correcta
 import logging
 from logging.handlers import RotatingFileHandler
-from sqlalchemy import create_engine
 from dotenv import load_dotenv
 
 # Cargar variables de entorno
@@ -22,14 +20,6 @@ def create_app(config_name):
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
     
-    # Configurar la sesión de Flask
-    app.config['SESSION_TYPE'] = 'filesystem'
-    Session(app)
-    
-    # Verificar si la configuración de la base de datos está correcta
-    if 'SQLALCHEMY_DATABASE_URI' not in app.config:
-        raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
-
     # Configurar opciones del motor SQLAlchemy
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_size': 10,
