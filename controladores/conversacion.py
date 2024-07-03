@@ -451,7 +451,7 @@ def handle_message(message):
             return respuesta_bot
         elif "consulta especifica" in confirmacion:
             conversation_state["estado"] = "interactuar_con_openai"
-            respuesta_bot = "🔍 **¿Puedes proporcionar más detalles sobre tu consulta específica?**"
+            respuesta_bot = "🔍 **¿Puedes preguntarme con más detalle que deseas saber sobre los servicios o problemas automotriz como 🛠️ **en que consiste un afinamiento** 📝  consultame por favor?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             return respuesta_bot
         else:
@@ -462,7 +462,7 @@ def handle_message(message):
     elif conversation_state["estado"] == "interactuar_con_openai":
         consulta = message.strip().lower()
         respuesta_openai = interactuar_con_openai(consulta)
-        respuesta_bot = f"ℹ️ {respuesta_openai}. ¿Hay algo más que quieras saber o deseas proceder con la reserva del servicio '{conversation_state['servicio_principal']}'?"
+        respuesta_bot = f"ℹ️ {respuesta_openai}. ¿💡Hay algo más que quieras saber o deseas proceder con la reserva del servicio🟢 '{conversation_state['servicio_principal']}'?"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         conversation_state["estado"] = "confirmar_servicio"
         return respuesta_bot
