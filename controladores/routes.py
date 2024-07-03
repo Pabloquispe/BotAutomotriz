@@ -141,4 +141,3 @@ def register_routes(app):
             error_trace = traceback.format_exc()
             app.logger.error(f"Error en la ruta '/reservas': {str(e)}\n{error_trace}")
             return jsonify({'error': str(e)}), 500
-
