@@ -195,7 +195,7 @@ def handle_message(message):
         respuesta_bot = "¡Hola! 👋 **Soy tu asistente para la reserva de servicios automotrices.** 🚗 ¿Cómo te puedo ayudar hoy? "
         es_exitosa = True
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return jsonify({"message": respuesta_bot})
+        return jsonify({"message": respuesta_bot}) 
     
     if conversation_state["estado"] == "inicio":
         conversation_state["estado"] = "solicitar_email"
