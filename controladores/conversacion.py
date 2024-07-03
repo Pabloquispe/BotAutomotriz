@@ -12,6 +12,11 @@ from openai.error import OpenAIError
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+# Verificar si la clave API fue obtenida correctamente
+if openai.api_key is None:
+    raise ValueError("La clave API de OpenAI no se encontró en las variables de entorno.")
+
+
 # Variable global para almacenar el estado de la conversación
 conversation_state = {
     "usuario_id": None,
