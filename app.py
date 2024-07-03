@@ -11,6 +11,7 @@ from controladores.main_routes import main_bp
 from controladores.conversacion import register_routes
 import logging
 from logging.handlers import RotatingFileHandler
+from sqlalchemy import create_engine
 from dotenv import load_dotenv
 
 # Cargar variables de entorno
@@ -29,9 +30,18 @@ def create_app(config_name):
     if 'SQLALCHEMY_DATABASE_URI' not in app.config:
         raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
 
-    # Inicializar la base de datos
+    # Configurar el pool de conexiones
+    engine = create_engine(
+        app.config['SQLALCHEMY_DATABASE_URI'],
+        pool_size=10,
+        max_overflow=20,
+        pool_timeout=30,
+        pool_recycle=3600,
+    )
     db.init_app(app)
-    Migrate(app, db)
+    db.app = app
+
+    migrate = Migrate(app, db)
 
     # Registrar Blueprints
     app.register_blueprint(admin_bp)
