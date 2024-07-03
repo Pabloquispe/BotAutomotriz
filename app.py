@@ -88,3 +88,4 @@ if __name__ == "__main__":
     config_name = os.getenv('FLASK_CONFIG', 'production')  # Configuración predeterminada para producción
     app = create_app(config_name)
     app.run(debug=(config_name == 'development'))
+
