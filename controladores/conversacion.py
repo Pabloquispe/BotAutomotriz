@@ -41,7 +41,7 @@ conversation_state = {
 def interactuar_con_openai(consulta):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": consulta}
@@ -94,13 +94,6 @@ def cargar_servicios():
         print(f"Error al cargar servicios: {e}")
     return servicios
 
-def preprocesar_texto(texto):
-    texto = texto.lower()
-    texto = re.sub(r'\d+', '', texto)  # Eliminar números
-    texto = re.sub(r'\s+', ' ', texto)  # Eliminar espacios adicionales
-    texto = re.sub(r'[^\w\s]', '', texto)  # Eliminar caracteres especiales
-    return texto
-
 def cargar_problemas_servicios():
     problemas_servicios = {}
     try:
@@ -119,8 +112,6 @@ def cargar_problemas_servicios():
     except Exception as e:
         print(f"Error al cargar problemas y servicios: {e}")
     return problemas_servicios
-
-
 
 # Función para encontrar servicio basado en la consulta
 def encontrar_servicio(servicios, consulta):
@@ -249,7 +240,7 @@ def handle_message(message):
     elif conversation_state["estado"] == "solicitar_nombre":
         conversation_state["nombre_completo"] = message.strip()
         conversation_state["estado"] = "solicitar_telefono"
-        respuesta_bot = f"Gracias, **{conversation_state['nombre_completo'] } ** 🙏. Ahora, ¿puedes proporcionarme tu número de teléfono? 📞"
+        respuesta_bot = f"Gracias, **{conversation_state['nombre_completo']}** 🙏. Ahora, ¿puedes proporcionarme tu número de teléfono? 📞"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         return respuesta_bot
 
@@ -439,19 +430,19 @@ def handle_message(message):
             respuesta_bot = f"💰 **El servicio** '{conversation_state['servicio_principal']}' **tiene un costo de** {conversation_state['servicio_precio']} **soles. ¿Deseas reservar este servicio, 🛠️ otro servicio 🔍 o tienes una CONSULTA ESPECIFICA de servicios o problemas automotrices?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             return respuesta_bot
-        elif confirmacion in ['si', 'ok', 'por supuesto', 'sí', 'sí.', 'si.', 'esta bien', 'deseo proceder con la reserva de servicio', 'claro', 'reservar', 'procedo con la reserva', 'claro', 'reservar servicio', 'deseo reservar servicio']:
+        elif confirmacion in ['si', 'ok', 'por supuesto', 'reservar el servicio', 'reservar', 'sí.', 'si.', 'esta bien', ' si esta bien', 'deseo proceder con la reserva de servicio', 'claro', 'reservar', 'procedo con la reserva', 'claro', 'reservar servicio', 'deseo reservar servicio']:
             conversation_state["estado"] = "solicitar_fecha"
             respuesta_bot = "📅 **Por favor, proporciona la fecha para tu reserva (AAAA-MM-DD).**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             return respuesta_bot
-        elif "reservar otro servicio" in confirmacion:
+        elif "reservar otro servicio" in confirmacion or "otro servicio" in confirmacion or "nuevo servicio" in confirmacion:
             conversation_state["estado"] = "reservar_servicio"
             respuesta_bot = "🛠️ **¿Cuál es el otro servicio que deseas reservar?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             return respuesta_bot
         elif "consulta especifica" in confirmacion:
             conversation_state["estado"] = "interactuar_con_openai"
-            respuesta_bot = "🔍 **¿Puedes proporcionar más detalles sobre tu consulta específica?**"
+            respuesta_bot = "🔍 **¿Preguntame tu consulta específica,💡que deseas saber sobre sobre problemas y servicios automotriz🛠️?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             return respuesta_bot
         else:
@@ -462,7 +453,7 @@ def handle_message(message):
     elif conversation_state["estado"] == "interactuar_con_openai":
         consulta = message.strip().lower()
         respuesta_openai = interactuar_con_openai(consulta)
-        respuesta_bot = f"ℹ️ {respuesta_openai}. ¿Hay algo más que quieras saber o deseas proceder con la reserva del servicio '{conversation_state['servicio_principal']}'?"
+        respuesta_bot = f"ℹ️ {respuesta_openai}. ¿💡Hay algo más que quieras saber o deseas proceder con la reserva del servicio🛠️ '{conversation_state['servicio_principal']}'? 🚗"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         conversation_state["estado"] = "confirmar_servicio"
         return respuesta_bot
