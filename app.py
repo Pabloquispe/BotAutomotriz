@@ -29,9 +29,9 @@ def create_app(config_name):
     if 'SQLALCHEMY_DATABASE_URI' not in app.config:
         raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
 
-    # Configurar la base de datos y migraciones
+    # Inicializar la base de datos
     db.init_app(app)
-    migrate = Migrate(app, db)
+    Migrate(app, db)
 
     # Registrar Blueprints
     app.register_blueprint(admin_bp)
@@ -82,4 +82,3 @@ if __name__ == '__main__':
     config_name = os.getenv('FLASK_CONFIG', 'default')
     app = create_app(config_name)
     app.run()
-
