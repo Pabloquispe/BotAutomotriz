@@ -1,5 +1,3 @@
-# Archivo app.py
-
 import os
 import logging
 from logging.handlers import RotatingFileHandler
@@ -56,5 +54,3 @@ def configure_logging(app):
 
         app.logger.setLevel(logging.INFO)
         app.logger.info('Aplicación iniciada')
-
-
