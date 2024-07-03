@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template
 from flask_migrate import Migrate
+from flask_session import Session
 from config import config_by_name
 from modelos.models import db
 from controladores.admin_routes import admin_bp
@@ -37,6 +38,10 @@ def create_app(config_name):
     db.engine = engine
 
     migrate = Migrate(app, db)
+
+    # Configurar Flask-Session
+    app.config['SESSION_TYPE'] = 'filesystem'  # Puedes cambiar esto según tus necesidades
+    Session(app)
 
     # Registrar Blueprints
     app.register_blueprint(admin_bp)
@@ -84,3 +89,7 @@ def configure_error_handlers(app):
         db.session.rollback()
         return render_template('500.html'), 500
 
+if __name__ == "__main__":
+    config_name = os.getenv('FLASK_CONFIG', 'production')  # Configuración predeterminada para producción
+    app = create_app(config_name)
+    app.run(debug=(config_name == 'development'))
