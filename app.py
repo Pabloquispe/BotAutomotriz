@@ -1,14 +1,12 @@
 import os
 from flask import Flask, render_template
 from flask_migrate import Migrate
-from flask_session import Session
 from config import config_by_name
 from modelos.models import db
 from controladores.admin_routes import admin_bp
 from controladores.user_routes import user_bp
 from controladores.auth_routes import auth_bp
 from controladores.main_routes import main_bp
-from controladores.conversacion import register_routes
 import logging
 from logging.handlers import RotatingFileHandler
 from sqlalchemy import create_engine
@@ -21,10 +19,6 @@ def create_app(config_name):
     """Crea y configura la aplicación Flask."""
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
-    
-    # Configurar la sesión de Flask
-    app.config['SESSION_TYPE'] = 'filesystem'
-    Session(app)
     
     # Verificar si la configuración de la base de datos está correcta
     if 'SQLALCHEMY_DATABASE_URI' not in app.config:
@@ -49,9 +43,10 @@ def create_app(config_name):
     app.register_blueprint(user_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
-    register_routes(app)
-
+    
     with app.app_context():
+        from controladores.routes import register_routes
+        register_routes(app)
         db.create_all()
 
     # Configuración de logs
@@ -88,8 +83,3 @@ def configure_error_handlers(app):
     def internal_error(error):
         db.session.rollback()
         return render_template('500.html'), 500
-
-if __name__ == '__main__':
-    config_name = os.getenv('FLASK_CONFIG', 'default')
-    app = create_app(config_name)
-    app.run()
