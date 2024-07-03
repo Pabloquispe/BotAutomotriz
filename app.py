@@ -26,7 +26,7 @@ def create_app(config_name):
         raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
 
     db.init_app(app)
-    migrate = Migrate(app, db)
+    Migrate(app, db)
 
     # Registrar Blueprints
     app.register_blueprint(conversacion_bp)
