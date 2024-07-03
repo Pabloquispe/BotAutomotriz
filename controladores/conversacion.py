@@ -50,11 +50,14 @@ def interactuar_con_openai(consulta):
             temperature=0.5,
         )
         return response.choices[0].message['content'].strip()
-    except openai.error.InvalidRequestError:
+    except openai.error.RateLimitError:
         return "❌ **Lo siento, hemos superado nuestro límite de solicitudes por ahora. Por favor, intenta de nuevo más tarde.**"
-    except Exception as e:
+    except openai.error.OpenAIError as e:
         print(f"Error interacting with OpenAI: {e}")
         return "❌ **Ha ocurrido un error al interactuar con OpenAI. Por favor, intenta de nuevo más tarde.**"
+    except Exception as e:
+        print(f"Error interacting with OpenAI: {e}")
+        return "❌ **Ha ocurrido un error inesperado. Por favor, intenta de nuevo más tarde.**"
 
 # Función para registrar interacciones
 def registrar_interaccion(usuario_id, mensaje_usuario, respuesta_bot, es_exitosa):
@@ -209,19 +212,18 @@ def handle_message(message):
     
     if conversation_state["estado"] == "inicio":
         conversation_state["estado"] = "solicitar_email"
-        conversation_state["consultas_iniciadas"] += 1
         conversation_state["tiempo_inicio_registro"] = datetime.now()
         respuesta_bot = "Por favor, proporcióname tu correo electrónico. 📧"
         es_exitosa = True
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot
+        return jsonify({"message": respuesta_bot})
 
     elif conversation_state["estado"] == "solicitar_email":
         email = message.strip()
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             respuesta_bot = "❌ **Por favor, proporciona un correo electrónico válido.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
+            return jsonify({"message": respuesta_bot})
         conversation_state["email"] = email
         usuario = Usuario.query.filter_by(email=email).first()
         if usuario:
@@ -233,16 +235,17 @@ def handle_message(message):
             else:
                 respuesta_bot = "**No tienes un vehículo registrado.** 🚗 Por favor, registra tu vehículo primero."
                 conversation_state["estado"] = "solicitar_marca"
-                return respuesta_bot
+                return jsonify({"message": respuesta_bot})
             respuesta_bot = f"¡Hola de nuevo, **{usuario.nombre}!** 👋 ¿Qué servicio deseas reservar hoy o cuéntame qué problema tiene tu auto?"
             es_exitosa = True
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
+            return jsonify({"message": respuesta_bot})
         else:
             conversation_state["estado"] = "solicitar_nombre"
             respuesta_bot = f"**¡Encantado de conocerte!** 😊 Parece que eres un cliente nuevo. Por favor, dime tu nombre completo y apellido."
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
+            return jsonify({"message": respuesta_bot})
+
 
     elif conversation_state["estado"] == "solicitar_nombre":
         conversation_state["nombre_completo"] = message.strip()
@@ -429,33 +432,36 @@ def handle_message(message):
 
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         conversation_state["estado"] = "confirmar_servicio"
-        return respuesta_bot
+        return jsonify({"message": respuesta_bot})
+
+    # Continuar con los demás estados aquí...
 
     elif conversation_state["estado"] == "confirmar_servicio":
         confirmacion = message.strip().lower()
         if "cuanto cuesta" in confirmacion or "costo" in confirmacion or "precio" in confirmacion:
             respuesta_bot = f"💰 **El servicio** '{conversation_state['servicio_principal']}' **tiene un costo de** {conversation_state['servicio_precio']} **soles. ¿Deseas reservar este servicio, 🛠️ otro servicio 🔍 o tienes una CONSULTA ESPECIFICA de servicios o problemas automotrices?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
-        elif confirmacion in ['si', 'ok', 'por supuesto', 'sí', 'sí.', 'si.', 'esta bien', 'deseo proceder con la reserva de servicio', 'claro', 'reservar', 'procedo con la reserva', 'claro', 'reservar servicio', 'deseo reservar servicio']:
+            return jsonify({"message": respuesta_bot})
+        elif "reservar" in confirmacion:
             conversation_state["estado"] = "solicitar_fecha"
             respuesta_bot = "📅 **Por favor, proporciona la fecha para tu reserva (AAAA-MM-DD).**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
-        elif "reservar otro servicio" in confirmacion or "otro servicio" in confirmacion or "nuevo servicio" in confirmacion:
+            return jsonify({"message": respuesta_bot})
+        elif "otro servicio" in confirmacion or "nuevo servicio" in confirmacion:
             conversation_state["estado"] = "reservar_servicio"
             respuesta_bot = "🛠️ **¿Cuál es el otro servicio que deseas reservar?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
+            return jsonify({"message": respuesta_bot})
         elif "consulta especifica" in confirmacion:
             conversation_state["estado"] = "interactuar_con_openai"
             respuesta_bot = "🔍 **¿Puedes proporcionar más detalles sobre tu consulta específica?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
+            return jsonify({"message": respuesta_bot})
         else:
             respuesta_bot = "❌ **No entiendo tu respuesta. Por favor, elige una opción: reservar el servicio, reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot
+            return jsonify({"message": respuesta_bot})
+
 
     elif conversation_state["estado"] == "interactuar_con_openai":
         consulta = message.strip().lower()
