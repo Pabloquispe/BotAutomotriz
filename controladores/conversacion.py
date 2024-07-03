@@ -41,7 +41,7 @@ conversation_state = {
 def interactuar_con_openai(consulta):
     try:
         response = openai.ChatCompletion.create(
-            model="text-davinci-003",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": consulta}
