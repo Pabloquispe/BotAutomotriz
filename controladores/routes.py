@@ -14,7 +14,7 @@ def register_routes(app):
             user_message = request.json.get('message')
             if not user_message:
                 # Responder con mensaje de bienvenida si el mensaje del usuario está vacío
-                respuesta_bot = "¡Hola! 👋 **Soy tu asistente para la reserva de servicios automotrices.** 🚗 ¿Cómo te puedo ayudar hoy? "
+                respuesta_bot = "¡Hola! 👋 **Soy tu asistente para la reserva de servicios automotrices.** 🚗 ¿Cómo te puedo ayudar hoy?"
                 es_exitosa = True
                 registrar_interaccion(None, '', respuesta_bot, es_exitosa)
                 return jsonify({'message': respuesta_bot})
@@ -141,3 +141,5 @@ def register_routes(app):
             error_trace = traceback.format_exc()
             app.logger.error(f"Error en la ruta '/reservas': {str(e)}\n{error_trace}")
             return jsonify({'error': str(e)}), 500
+
+
