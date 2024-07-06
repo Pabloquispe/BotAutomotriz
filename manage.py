@@ -2,6 +2,7 @@ import os
 import sys
 from flask import Flask
 from flask_migrate import Migrate, upgrade
+from flask_session import Session
 from config import config_by_name
 from modelos.models import db
 from controladores.admin_routes import admin_bp
@@ -13,6 +14,9 @@ def create_app(config_name):
     """Crea y configura la aplicación Flask."""
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
+    
+    # Inicializar la sesión
+    Session(app)
     
     # Inicializar la base de datos
     db.init_app(app)
