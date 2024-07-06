@@ -1,6 +1,6 @@
-import os
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask_migrate import Migrate
+from flask_session import Session
 from config import config_by_name
 from modelos.models import db
 from controladores.admin_routes import admin_bp
@@ -11,6 +11,7 @@ from controladores.routes import register_routes
 import logging
 from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
+import os
 
 # Cargar variables de entorno
 load_dotenv()
@@ -20,10 +21,6 @@ def create_app(config_name):
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
 
-    # Verificar si la configuración de la base de datos está correcta
-    if 'SQLALCHEMY_DATABASE_URI' not in app.config:
-        raise RuntimeError("SQLALCHEMY_DATABASE_URI no está configurado")
-
     # Configurar opciones del motor SQLAlchemy
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_size': 10,
@@ -32,7 +29,20 @@ def create_app(config_name):
         'pool_recycle': 3600,
     }
 
+    # Configuración de sesiones basada en archivos
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SESSION_FILE_DIR'] = os.path.join(os.getcwd(), 'flask_session')
+    app.config['SESSION_PERMANENT'] = False
+    app.config['SESSION_USE_SIGNER'] = True
+    app.config['SESSION_FILE_THRESHOLD'] = 100
+    app.config['SESSION_FILE_MODE'] = 600
+    app.config['SESSION_COOKIE_NAME'] = 'my_session'
+
+    # Inicializar sesión
+    Session(app)
+
     db.init_app(app)
+    db.app = app
 
     migrate = Migrate(app, db)
 
@@ -83,5 +93,7 @@ def configure_error_handlers(app):
 
 if __name__ == '__main__':
     config_name = os.getenv('FLASK_CONFIG', 'default')
+    print(f"Configuración utilizada: {config_name}")
     app = create_app(config_name)
     app.run()
+
