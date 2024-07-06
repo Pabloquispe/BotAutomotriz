@@ -21,9 +21,6 @@ def create_app(config_name):
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
 
-    # Inicializar Flask-Session
-    Session(app)
-
     # Configurar opciones del motor SQLAlchemy
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_size': 10,
@@ -31,6 +28,10 @@ def create_app(config_name):
         'pool_timeout': 30,
         'pool_recycle': 3600,
     }
+
+    # Inicializar Flask-Session
+    app.config['SESSION_TYPE'] = 'filesystem'
+    Session(app)
 
     db.init_app(app)
     db.app = app
@@ -86,5 +87,6 @@ if __name__ == '__main__':
     config_name = os.getenv('FLASK_CONFIG', 'default')
     print(f"Configuración utilizada: {config_name}")
     app = create_app(config_name)
-    app.run(debug=True)  # Habilitar el modo debug para ver posibles errores en la configuración
+    app.run(debug=True)
+
 
