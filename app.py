@@ -1,9 +1,16 @@
-import redis
+from flask import Flask
+from flask_session import Session
+from config import Config
 
-class Config:
-    SECRET_KEY = 'your_secret_key'  # Asegúrate de tener una clave secreta configurada
-    SESSION_TYPE = 'redis'
-    SESSION_PERMANENT = False
-    SESSION_USE_SIGNER = True
-    SESSION_KEY_PREFIX = 'flask_session:'
-    SESSION_REDIS = redis.from_url('redis://localhost:6379/0')  # Cambia esto si tu URL de Redis es diferente
+app = Flask(__name__)
+app.config.from_object(Config)
+
+# Inicializar la extensión Flask-Session
+Session(app)
+
+@app.route('/')
+def index():
+    return "Hello, World!"
+
+if __name__ == "__main__":
+    app.run()
