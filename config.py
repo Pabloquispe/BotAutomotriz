@@ -45,4 +45,3 @@ config_by_name = {
     'default': DevelopmentConfig
 }
 
-
