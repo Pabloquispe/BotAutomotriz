@@ -6,13 +6,11 @@ from datetime import datetime, timedelta
 from modelos.models import db, Usuario, Vehiculo, Servicio, Slot, Reserva, RegistroUsuario, RegistroServicio, Interaccion
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from flask import Blueprint, request, jsonify, current_app as app, redirect, url_for
-from openai.error import OpenAIError
+from flask import Blueprint, request, jsonify, current_app as app
 
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('API_KEY')
 
-RESERVAS_API_URL = os.getenv('API_URL')
 # Variable global para almacenar el estado de la conversación
 conversation_state = {
     "usuario_id": None,
@@ -200,7 +198,7 @@ def handle_message(message):
         respuesta_bot = "¡Hola! 👋 **Soy tu asistente para la reserva de servicios automotrices.** 🚗 ¿Cómo te puedo ayudar hoy?"
         es_exitosa = True
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
     
     if conversation_state["estado"] == "inicio":
         conversation_state["estado"] = "solicitar_email"
@@ -209,14 +207,14 @@ def handle_message(message):
         respuesta_bot = "Por favor, proporcióname tu correo electrónico. 📧"
         es_exitosa = True
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_email":
         email = message.strip()
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             respuesta_bot = "❌ **Por favor, proporciona un correo electrónico válido.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         conversation_state["email"] = email
         usuario = Usuario.query.filter_by(email=email).first()
         if usuario:
@@ -229,49 +227,49 @@ def handle_message(message):
                 respuesta_bot = "**No tienes un vehículo registrado.** 🚗 Por favor, registra tu vehículo primero."
                 conversation_state["estado"] = "solicitar_marca"
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-                return respuesta_bot  # Devuelve cadena de texto
+                return respuesta_bot
             respuesta_bot = f"¡Hola de nuevo, **{usuario.nombre}!** 👋 ¿Qué servicio deseas reservar hoy o cuéntame qué problema tiene tu auto?"
             es_exitosa = True
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         else:
             conversation_state["estado"] = "solicitar_nombre"
             respuesta_bot = f"**¡Encantado de conocerte!** 😊 Parece que eres un cliente nuevo. Por favor, dime tu nombre completo y apellido."
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_nombre":
         conversation_state["nombre_completo"] = message.strip()
         conversation_state["estado"] = "solicitar_telefono"
         respuesta_bot = f"Gracias, **{conversation_state['nombre_completo']}** 🙏. Ahora, ¿puedes proporcionarme tu número de teléfono? 📞"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_telefono":
         telefono = message.strip()
         if not re.match(r"^\d{9}$", telefono):
             respuesta_bot = "❌ **El número de teléfono debe tener 9 dígitos.** Por favor, proporciona un número de teléfono válido."
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         conversation_state["telefono"] = telefono
         conversation_state["estado"] = "solicitar_direccion"
         respuesta_bot = f"**Excelente.** 🏡 ¿Cuál es la dirección de tu domicilio?"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_direccion":
         conversation_state["direccion"] = message.strip()
         conversation_state["estado"] = "solicitar_pais"
         respuesta_bot = f"**Genial.** 🌍 ¿De qué país eres?"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_pais":
         conversation_state["pais"] = message.strip()
         conversation_state["estado"] = "solicitar_fecha_nacimiento"
         respuesta_bot = f"**Perfecto.** 🎂 ¿Cuál es tu fecha de nacimiento? (formato: AAAA-MM-DD)"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_fecha_nacimiento":
         fecha_nacimiento = message.strip()
@@ -281,11 +279,11 @@ def handle_message(message):
             conversation_state["estado"] = "solicitar_genero"
             respuesta_bot = f"Gracias. 🙏 ¿Cuál es tu género? (F para Femenino, M para Masculino, Otro)"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         except ValueError:
             respuesta_bot = "❌ **Formato de fecha incorrecto.** Por favor, proporciona tu fecha de nacimiento en el formato AAAA-MM-DD."
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_genero":
         genero = message.strip().upper()
@@ -294,25 +292,25 @@ def handle_message(message):
             conversation_state["estado"] = "solicitar_marca"
             respuesta_bot = f"Gracias. 🚗 **¿Cuál es la marca de tu vehículo?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         else:
             respuesta_bot = "❌ **Por favor, elige una opción válida:** F para Femenino, M para Masculino, Otro."
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_marca":
         conversation_state["marca"] = message.strip()
         conversation_state["estado"] = "solicitar_modelo"
         respuesta_bot = f"**Ok, ahora dime.** 🚗 **¿Cuál es el modelo de tu vehículo?**"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_modelo":
         conversation_state["modelo"] = message.strip()
         conversation_state["estado"] = "solicitar_año"
         respuesta_bot = f"**Está bien.** 🗓️ **¿Cuál es el año de tu vehículo?**"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_año":
         try:
@@ -320,23 +318,23 @@ def handle_message(message):
             if conversation_state["año"] > datetime.now().year:
                 respuesta_bot = "❌ **El año del vehículo no puede ser en el futuro.** Por favor, proporciona un año válido."
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-                return respuesta_bot  # Devuelve cadena de texto
+                return respuesta_bot
             nombre, apellido = conversation_state["nombre_completo"].split(" ", 1) if " " in conversation_state["nombre_completo"] else (conversation_state["nombre_completo"], "")
             conversation_state["estado"] = "solicitar_password"
             respuesta_bot = "🔒 **Por favor, proporciona una contraseña para tu cuenta.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         except ValueError:
             respuesta_bot = "❌ **Por favor, proporciona un año válido.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_password":
         conversation_state["password"] = message.strip()
         conversation_state["estado"] = "confirmar_password"
         respuesta_bot = "🔒 **Por favor, confirma tu contraseña.**"
         registrar_interaccion(conversation_state["usuario_id"], '********', respuesta_bot, es_exitosa)
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "confirmar_password":
         conversation_state["password_confirmacion"] = message.strip()
@@ -344,7 +342,7 @@ def handle_message(message):
             conversation_state["estado"] = "solicitar_password"
             respuesta_bot = "❌ **Las contraseñas no coinciden.** Por favor, proporciona una contraseña para tu cuenta."
             registrar_interaccion(conversation_state["usuario_id"], '********', respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
         nombre, apellido = conversation_state["nombre_completo"].split(" ", 1) if " " in conversation_state["nombre_completo"] else (conversation_state["nombre_completo"], "")
         usuario_data = {
@@ -384,15 +382,15 @@ def handle_message(message):
                 respuesta_bot = f"**Muchas gracias {conversation_state['nombre_completo']}** 🙌. **Hemos registrado tu información. Cuéntame,** **¿Qué servicio deseas reservar hoy o cuéntame qué problema tiene tu auto?** 🚗"
                 es_exitosa = True
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-                return respuesta_bot  # Devuelve cadena de texto
+                return respuesta_bot
             else:
                 respuesta_bot = "❌ **Hubo un error al registrar tu vehículo.** Por favor, intenta de nuevo."
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-                return respuesta_bot  # Devuelve cadena de texto
+                return respuesta_bot
         else:
             respuesta_bot = "❌ **Hubo un error al registrar tu información.** Por favor, intenta de nuevo."
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
     elif conversation_state["estado"] == "reservar_servicio":
         consulta = message.strip().lower()
@@ -425,33 +423,33 @@ def handle_message(message):
 
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         conversation_state["estado"] = "confirmar_servicio"
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "confirmar_servicio":
         confirmacion = message.strip().lower()
         if "cuanto cuesta" in confirmacion or "costo" in confirmacion or "precio" in confirmacion:
             respuesta_bot = f"💰 **El servicio** '{conversation_state['servicio_principal']}' **tiene un costo de** {conversation_state['servicio_precio']} **soles. ¿Deseas reservar este servicio, 🛠️Reservar otro servicio 🔍 o tienes una CONSULTA ESPECIFICA de servicios o problemas automotrices?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         elif confirmacion in ['si', 'ok', 'por supuesto', 'reservar el servicio', 'reservar', 'sí.', 'si.', 'esta bien', ' si esta bien', 'deseo proceder con la reserva de servicio', 'claro', 'reservar', 'procedo con la reserva', 'claro', 'reservar servicio', 'deseo reservar servicio']:
             conversation_state["estado"] = "solicitar_fecha"
             respuesta_bot = "📅 **Por favor, proporciona la fecha para tu reserva (AAAA-MM-DD).**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         elif "reservar otro servicio" in confirmacion or "Reservar otro servicio" in confirmacion or "nuevo servicio" in confirmacion:
             conversation_state["estado"] = "reservar_servicio"
             respuesta_bot = "🛠️ **¿Cuál es el otro servicio que deseas reservar?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         elif "consulta especifica" in confirmacion:
             conversation_state["estado"] = "interactuar_con_openai"
             respuesta_bot = "🔍 **¿Preguntame tu consulta específica,💡que deseas saber sobre sobre problemas y servicios automotriz🛠️?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         else:
             respuesta_bot = "❌ **No entiendo tu respuesta. Por favor, elige una opción: reservar el servicio,🛠️ Reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
     elif conversation_state["estado"] == "interactuar_con_openai":
         consulta = message.strip().lower()
@@ -459,7 +457,7 @@ def handle_message(message):
         respuesta_bot = f"ℹ️ {respuesta_openai}. ¿💡Hay algo más que quieras saber o deseas proceder con 🚗Reservar el servicio🛠️ '{conversation_state['servicio_principal']}'? 🚗"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         conversation_state["estado"] = "confirmar_servicio"
-        return respuesta_bot  # Devuelve cadena de texto
+        return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_fecha":
         try:
@@ -471,16 +469,16 @@ def handle_message(message):
                 if not slots_disponibles:
                     respuesta_bot = "❌ **Lo siento, no hay slots disponibles para el servicio en la fecha solicitada.** Por favor, elige otra fecha."
                     registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-                    return respuesta_bot  # Devuelve cadena de texto
+                    return respuesta_bot
             horarios_disponibles = [slot.hora_inicio.strftime('%H:%M') for slot in slots_disponibles]
             conversation_state["estado"] = "solicitar_hora"
             respuesta_bot = f"🕒 **Para la fecha** {conversation_state['fecha_reserva']}, **tenemos estos horarios disponibles:** {', '.join(horarios_disponibles)}. **Por favor, selecciona uno de estos horarios (HH:MM).**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         except ValueError:
             respuesta_bot = "❌ **Formato de fecha incorrecto.** Por favor, proporciona la fecha para tu reserva (AAAA-MM-DD)."
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
 
     elif conversation_state["estado"] == "solicitar_hora":
         hora_reserva = message.strip()
@@ -535,10 +533,14 @@ def handle_message(message):
         if message.strip().lower() in ['no', 'ninguna', 'gracias', 'nada', 'nada gracias', 'nada más']:
             respuesta_bot = "**Muchas gracias, no dudes en escribirnos. Estamos para servirte.** 🙌"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
         else:
             conversation_state["estado"] = "reservar_servicio"
             respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            return respuesta_bot  # Devuelve cadena de texto
+            return respuesta_bot
+
+# Ejemplo de uso:
+user_message = "pablo@gmail.com"
+print(handle_message(user_message))
 
