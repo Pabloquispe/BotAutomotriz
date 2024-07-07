@@ -1,11 +1,18 @@
-from flask import Flask
+from flask import Flask, session
 from flask_session import Session
-from config import Config
+from redis import Redis
+import os
 
 app = Flask(__name__)
-app.config.from_object(Config)
 
-# Inicializar Flask-Session
+# Configuración de la sesión
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_KEY_PREFIX'] = 'flask_session:'
+app.config['SESSION_REDIS'] = Redis.from_url(os.environ.get('REDIS_URL'))
+
+# Inicialización de la sesión
 Session(app)
 
 @app.route('/')
