@@ -12,6 +12,7 @@ from controladores.routes import register_routes
 import logging
 from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
+import redis
 
 # Cargar variables de entorno
 load_dotenv()
@@ -21,9 +22,6 @@ def create_app(config_name):
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
 
-    # Inicializar Flask-Session
-    Session(app)
-
     # Configurar opciones del motor SQLAlchemy
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_size': 10,
@@ -31,6 +29,14 @@ def create_app(config_name):
         'pool_timeout': 30,
         'pool_recycle': 3600,
     }
+
+    # Configurar sesiones en Redis
+    app.config['SESSION_TYPE'] = 'redis'
+    app.config['SESSION_REDIS'] = redis.from_url(os.getenv('REDIS_URL'))
+    app.config['SESSION_KEY_PREFIX'] = os.getenv('SESSION_KEY_PREFIX')
+    app.config['SESSION_USE_SIGNER'] = os.getenv('SESSION_USE_SIGNER') == 'True'
+    app.config['SESSION_PERMANENT'] = os.getenv('SESSION_PERMANENT') == 'True'
+    Session(app)
 
     db.init_app(app)
     db.app = app
@@ -86,6 +92,4 @@ if __name__ == '__main__':
     config_name = os.getenv('FLASK_CONFIG', 'default')
     print(f"Configuración utilizada: {config_name}")
     app = create_app(config_name)
-    app.run(debug=(config_name == 'dev'))
-
-
+    app.run(debug=True)
