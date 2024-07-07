@@ -409,7 +409,8 @@ def handle_message(message):
         servicio_principal, similitud_servicio = encontrar_servicio(servicios, consulta)
         
         if similitud_problema > similitud_servicio:
-            servicio = Servicio.query.filter_by(nombre=servicio_recomendado).first()
+            with app.app_context():
+                servicio = Servicio.query.filter_by(nombre=servicio_recomendado).first()
             if servicio:
                 conversation_state["servicio_principal"] = servicio.nombre
                 conversation_state["servicio_id"] = servicio.id
@@ -418,7 +419,8 @@ def handle_message(message):
             else:
                 respuesta_bot = "❌ **El servicio que has solicitado no está disponible.** Por favor, elige otro servicio."
         elif similitud_servicio >= UMBRAL_SIMILITUD:
-            servicio = Servicio.query.filter_by(nombre=servicio_principal).first()
+            with app.app_context():
+                servicio = Servicio.query.filter_by(nombre=servicio_principal).first()
             if servicio:
                 conversation_state["servicio_principal"] = servicio_principal
                 conversation_state["servicio_id"] = servicio.id
@@ -512,8 +514,8 @@ def handle_message(message):
             response = requests.post(f'{API_URL}/reservas', json=reserva_data)
 
             if response.status_code == 200:
+                slot.reservado = True
                 with app.app_context():
-                    slot.reservado = True
                     db.session.commit()
                 tiempo_fin_servicio = datetime.now()
                 nuevo_registro_servicio = RegistroServicio(
@@ -527,7 +529,8 @@ def handle_message(message):
                 conversation_state["estado"] = "despedida"
                 conversation_state["solicitudes_atendidas"] += 1
                 conversation_state["conversiones_realizadas"] += 1
-                servicio_principal = Servicio.query.get(conversation_state["servicio_id"]).nombre
+                with app.app_context():
+                    servicio_principal = Servicio.query.get(conversation_state["servicio_id"]).nombre
                 codigo_reserva = response.json()['reserva']
                 respuesta_bot = f"**Reserva creada exitosamente con código** {codigo_reserva} ✅ **para el servicio** '{servicio_principal}' **el** {fecha_hora_reserva.strftime('%Y-%m-%d a las %H:%M')}. **¿Necesitas algo más?** 😊"
                 es_exitosa = True
@@ -552,3 +555,4 @@ def handle_message(message):
             respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             return respuesta_bot  # Devuelve cadena de texto
+
