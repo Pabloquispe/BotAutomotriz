@@ -598,21 +598,3 @@ def handle_message(message):
     session['conversation_state'] = conversation_state  # Guardar estado en la sesión
     return "❌ **No entiendo tu respuesta. Por favor, elige una opción: reservar el servicio,🛠️ Reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
 
-if __name__ == '__main__':
-    from flask import Flask, session
-    from flask_session import Session
-
-    app = Flask(__name__)
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret!')
-    app.config['SESSION_TYPE'] = 'filesystem'
-
-    Session(app)
-
-    @app.route('/mensaje', methods=['POST'])
-    def mensaje():
-        message = request.json.get('message')
-        return jsonify({"response": handle_message(message)})
-
-    if __name__ == '__main__':
-        app.run(debug=True)
-
