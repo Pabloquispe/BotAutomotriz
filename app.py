@@ -5,7 +5,7 @@ from config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Inicializar la extensión Flask-Session
+# Inicializar Flask-Session
 Session(app)
 
 @app.route('/')
