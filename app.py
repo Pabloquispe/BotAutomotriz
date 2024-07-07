@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_session import Session
@@ -12,8 +11,9 @@ from controladores.main_routes import main_bp
 from controladores.routes import register_routes
 import logging
 from logging.handlers import RotatingFileHandler
+from dotenv import load_dotenv
 
-# Cargar las variables de entorno desde el archivo .env
+# Cargar variables de entorno
 load_dotenv()
 
 def create_app(config_name):
@@ -33,6 +33,8 @@ def create_app(config_name):
     }
 
     db.init_app(app)
+    db.app = app
+
     migrate = Migrate(app, db)
 
     # Registrar Blueprints
