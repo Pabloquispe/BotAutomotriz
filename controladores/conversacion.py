@@ -12,7 +12,7 @@ from openai.error import OpenAIError
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('API_KEY')
 
-RESERVAS_API_URL = os.getenv('API_URL')
+API_URL = os.getenv('API_URL')
 
 # Función para interactuar con OpenAI
 def interactuar_con_openai(consulta):
