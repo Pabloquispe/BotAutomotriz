@@ -1,4 +1,4 @@
-import os
+imimport os
 from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_session import Session
@@ -87,3 +87,4 @@ if __name__ == '__main__':
     print(f"Configuración utilizada: {config_name}")
     app = create_app(config_name)
     app.run(debug=True)
+
