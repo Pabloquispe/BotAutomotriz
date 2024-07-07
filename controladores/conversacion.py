@@ -3,15 +3,14 @@ import requests
 import re
 import os
 from datetime import datetime, timedelta
+from flask import Blueprint, request, jsonify, session, current_app as app, redirect, url_for
+from openai.error import OpenAIError
 from modelos.models import db, Usuario, Vehiculo, Servicio, Slot, Reserva, RegistroUsuario, RegistroServicio, Interaccion
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from flask import Blueprint, request, jsonify, current_app as app, redirect, url_for, session
-from openai.error import OpenAIError
 
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('API_KEY')
-
 API_URL = os.getenv('API_URL')
 
 # Función para interactuar con OpenAI
@@ -164,7 +163,6 @@ def generar_slots(servicio_id, fecha_inicio, fecha_fin):
 
 # Función para manejar los mensajes del usuario
 def handle_message(message):
-    # Inicializar el estado de la conversación si no existe
     if 'conversation_state' not in session:
         session['conversation_state'] = {
             "usuario_id": None,
@@ -190,9 +188,8 @@ def handle_message(message):
             "password": None,
             "password_confirmacion": None
         }
-
-    conversation_state = session['conversation_state']
     
+    conversation_state = session['conversation_state']
     servicios = cargar_servicios()
     problemas_servicios = cargar_problemas_servicios()
     
@@ -560,7 +557,7 @@ def handle_message(message):
                 respuesta_bot = f"**Reserva creada exitosamente con código** {codigo_reserva} ✅ **para el servicio** '{servicio_principal}' **el** {fecha_hora_reserva.strftime('%Y-%m-%d a las %H:%M')}. **¿Necesitas algo más?** 😊"
                 es_exitosa = True
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-                session.pop('conversation_state', None)  # Reiniciar la sesión al finalizar la reserva
+                session.pop('conversation_state', None)  # Eliminar estado de la sesión al finalizar
                 return respuesta_bot
             else:
                 respuesta_bot = "❌ **Hubo un error al registrar tu reserva.** Por favor, intenta de nuevo."
@@ -577,33 +574,11 @@ def handle_message(message):
         if message.strip().lower() in ['no', 'ninguna', 'gracias', 'nada', 'nada gracias', 'nada más']:
             respuesta_bot = "**Muchas gracias, no dudes en escribirnos. Estamos para servirte.** 🙌"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
+            session.pop('conversation_state', None)  # Eliminar estado de la sesión al finalizar
             return respuesta_bot  # Devuelve cadena de texto
         else:
             conversation_state["estado"] = "reservar_servicio"
             respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            session.pop('conversation_state', None)  # Reiniciar la sesión al finalizar la conversación
+            session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
-        
-
-    session['conversation_state'] = conversation_state  # Guardar estado en la sesión
-    return "❌ **No entiendo tu respuesta. Por favor, elige una opción: reservar el servicio,🛠️ Reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
-
-if __name__ == '__main__':
-    from flask import Flask, session
-    from flask_session import Session
-
-    app = Flask(__name__)
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret!')
-    app.config['SESSION_TYPE'] = 'filesystem'
-
-    Session(app)
-
-    @app.route('/mensaje', methods=['POST'])
-    def mensaje():
-        message = request.json.get('message')
-        return jsonify({"response": handle_message(message)})
-
-    if __name__ == '__main__':
-        app.run(debug=True)
