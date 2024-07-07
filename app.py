@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_session import Session
@@ -10,16 +12,17 @@ from controladores.main_routes import main_bp
 from controladores.routes import register_routes
 import logging
 from logging.handlers import RotatingFileHandler
-from dotenv import load_dotenv
-import os
 
-# Cargar variables de entorno
+# Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
 def create_app(config_name):
     """Crea y configura la aplicación Flask."""
     app = Flask(__name__, template_folder='vistas/templates', static_folder='vistas/static')
     app.config.from_object(config_by_name[config_name])
+
+    # Inicializar Flask-Session
+    Session(app)
 
     # Configurar opciones del motor SQLAlchemy
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
@@ -29,13 +32,7 @@ def create_app(config_name):
         'pool_recycle': 3600,
     }
 
-    # Inicializar Flask-Session
-    app.config['SESSION_TYPE'] = 'filesystem'
-    Session(app)
-
     db.init_app(app)
-    db.app = app
-
     migrate = Migrate(app, db)
 
     # Registrar Blueprints
@@ -88,5 +85,3 @@ if __name__ == '__main__':
     print(f"Configuración utilizada: {config_name}")
     app = create_app(config_name)
     app.run(debug=True)
-
-
