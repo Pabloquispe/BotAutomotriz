@@ -60,13 +60,13 @@ def interactuar_con_openai(consulta):
 
 # Función para registrar interacciones
 def registrar_interaccion(usuario_id, mensaje_usuario, respuesta_bot, es_exitosa):
+    nueva_interaccion = Interaccion(
+        usuario_id=usuario_id,
+        mensaje_usuario=mensaje_usuario,
+        respuesta_bot=respuesta_bot,
+        es_exitosa=es_exitosa
+    )
     with app.app_context():
-        nueva_interaccion = Interaccion(
-            usuario_id=usuario_id,
-            mensaje_usuario=mensaje_usuario,
-            respuesta_bot=respuesta_bot,
-            es_exitosa=es_exitosa
-        )
         db.session.add(nueva_interaccion)
         db.session.commit()
 
@@ -169,8 +169,9 @@ def generar_slots(servicio_id, fecha_inicio, fecha_fin):
                 hora_fin=(datetime.combine(fecha_inicio, current_time.time()) + timedelta(minutes=60)).time(),
                 reservado=False
             )
-            db.session.add(new_slot)
-            db.session.commit()
+            with app.app_context():
+                db.session.add(new_slot)
+                db.session.commit()
             current_time += timedelta(minutes=60)
 
         current_time = datetime.combine(fecha_inicio, horario_inicio_tarde)
@@ -182,8 +183,9 @@ def generar_slots(servicio_id, fecha_inicio, fecha_fin):
                 hora_fin=(datetime.combine(fecha_inicio, current_time.time()) + timedelta(minutes=60)).time(),
                 reservado=False
             )
-            db.session.add(new_slot)
-            db.session.commit()
+            with app.app_context():
+                db.session.add(new_slot)
+                db.session.commit()
             current_time += timedelta(minutes=60)
 
         fecha_inicio += delta
@@ -219,11 +221,13 @@ def handle_message(message):
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             return respuesta_bot  # Devuelve cadena de texto
         conversation_state["email"] = email
-        usuario = Usuario.query.filter_by(email=email).first()
+        with app.app_context():
+            usuario = Usuario.query.filter_by(email=email).first()
         if usuario:
             conversation_state["estado"] = "reservar_servicio"
             conversation_state["usuario_id"] = usuario.id
-            vehiculo = Vehiculo.query.filter_by(usuario_id=usuario.id).first()
+            with app.app_context():
+                vehiculo = Vehiculo.query.filter_by(usuario_id=usuario.id).first()
             if vehiculo:
                 conversation_state["vehiculo_id"] = vehiculo.id
             else:
@@ -466,10 +470,12 @@ def handle_message(message):
     elif conversation_state["estado"] == "solicitar_fecha":
         try:
             conversation_state["fecha_reserva"] = datetime.strptime(message.strip(), '%Y-%m-%d').date()
-            slots_disponibles = Slot.query.filter_by(fecha=conversation_state["fecha_reserva"], reservado=False).all()
+            with app.app_context():
+                slots_disponibles = Slot.query.filter_by(fecha=conversation_state["fecha_reserva"], reservado=False).all()
             if not slots_disponibles:
                 generar_slots(conversation_state["servicio_id"], str(conversation_state["fecha_reserva"]), str(conversation_state["fecha_reserva"]))
-                slots_disponibles = Slot.query.filter_by(fecha=conversation_state["fecha_reserva"], reservado=False).all()
+                with app.app_context():
+                    slots_disponibles = Slot.query.filter_by(fecha=conversation_state["fecha_reserva"], reservado=False).all()
                 if not slots_disponibles:
                     respuesta_bot = "❌ **Lo siento, no hay slots disponibles para el servicio en la fecha solicitada.** Por favor, elige otra fecha."
                     registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
@@ -488,7 +494,8 @@ def handle_message(message):
         hora_reserva = message.strip()
         try:
             fecha_hora_reserva = datetime.strptime(f"{conversation_state['fecha_reserva']} {hora_reserva}", '%Y-%m-%d %H:%M')
-            slot = Slot.query.filter_by(fecha=conversation_state["fecha_reserva"], hora_inicio=fecha_hora_reserva.time(), reservado=False).first()
+            with app.app_context():
+                slot = Slot.query.filter_by(fecha=conversation_state["fecha_reserva"], hora_inicio=fecha_hora_reserva.time(), reservado=False).first()
             if not slot:
                 respuesta_bot = "❌ **Lo siento, no hay slots disponibles para el servicio en la fecha y hora solicitada.** Por favor, elige otra fecha u hora."
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
@@ -505,8 +512,8 @@ def handle_message(message):
             response = requests.post(f'{API_URL}/reservas', json=reserva_data)
 
             if response.status_code == 200:
-                slot.reservado = True
                 with app.app_context():
+                    slot.reservado = True
                     db.session.commit()
                 tiempo_fin_servicio = datetime.now()
                 nuevo_registro_servicio = RegistroServicio(
