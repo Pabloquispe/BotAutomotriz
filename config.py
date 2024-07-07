@@ -1,11 +1,9 @@
-import os
+import redis
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-    SESSION_TYPE = 'redis'  # O el tipo de sesión que estás utilizando
+    SECRET_KEY = 'your_secret_key'  # Asegúrate de tener una clave secreta configurada
+    SESSION_TYPE = 'redis'
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
     SESSION_KEY_PREFIX = 'flask_session:'
-    SESSION_REDIS = redis.from_url(os.environ.get('REDIS_URL'))
-
-
+    SESSION_REDIS = redis.from_url('redis://localhost:6379/0')  # Cambia esto si tu URL de Redis es diferente
