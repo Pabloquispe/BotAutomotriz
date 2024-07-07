@@ -584,8 +584,8 @@ def handle_message(message):
             respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session.pop('conversation_state', None)  # Reiniciar la sesión al finalizar la conversación
-            session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
+        
 
     session['conversation_state'] = conversation_state  # Guardar estado en la sesión
     return "❌ **No entiendo tu respuesta. Por favor, elige una opción: reservar el servicio,🛠️ Reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
