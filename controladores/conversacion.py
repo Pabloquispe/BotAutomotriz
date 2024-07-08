@@ -570,4 +570,3 @@ def handle_message(message):
         respuesta_bot = "❌ **No entiendo tu solicitud. Por favor, intenta de nuevo.**"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         return respuesta_bot  # Devuelve cadena de texto
-
