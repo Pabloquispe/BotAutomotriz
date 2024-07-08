@@ -3,15 +3,35 @@ import requests
 import re
 import os
 from datetime import datetime, timedelta
-from flask import Blueprint, request, jsonify, session, current_app as app, redirect, url_for
-from openai.error import OpenAIError
 from modelos.models import db, Usuario, Vehiculo, Servicio, Slot, Reserva, RegistroUsuario, RegistroServicio, Interaccion
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from flask import Blueprint, request, jsonify, current_app as app, redirect, url_for, session
+from openai.error import OpenAIError
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('API_KEY')
-API_URL = os.getenv('API_URL')
+
+RESERVAS_API_URL = os.getenv('API_URL')
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+
+# Función para enviar un correo electrónico
+def enviar_correo(destinatario, asunto, contenido_html):
+    message = Mail(
+        from_email='tucorreo@tuempresa.com',  # Cambia esto por tu correo verificado en SendGrid
+        to_emails=destinatario,
+        subject=asunto,
+        html_content=contenido_html)
+    try:
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e.message)
 
 # Función para interactuar con OpenAI
 def interactuar_con_openai(consulta):
@@ -163,33 +183,32 @@ def generar_slots(servicio_id, fecha_inicio, fecha_fin):
 
 # Función para manejar los mensajes del usuario
 def handle_message(message):
-    if 'conversation_state' not in session:
-        session['conversation_state'] = {
-            "usuario_id": None,
-            "vehiculo_id": None,
-            "nombre_completo": None,
-            "email": None,
-            "telefono": None,
-            "direccion": None,
-            "pais": None,
-            "fecha_nacimiento": None,
-            "genero": None,
-            "problema": None,
-            "servicio_id": None,
-            "fecha_reserva": None,
-            "estado": "inicio",
-            "consultas_iniciadas": 0,
-            "solicitudes_atendidas": 0,
-            "conversiones_realizadas": 0,
-            "servicio_principal": None,
-            "servicio_precio": None,
-            "tiempo_inicio_registro": None,
-            "tiempo_inicio_servicio": None,
-            "password": None,
-            "password_confirmacion": None
-        }
+    global conversation_state
+    conversation_state = session.get('conversation_state', {
+        "usuario_id": None,
+        "vehiculo_id": None,
+        "nombre_completo": None,
+        "email": None,
+        "telefono": None,
+        "direccion": None,
+        "pais": None,
+        "fecha_nacimiento": None,
+        "genero": None,
+        "problema": None,
+        "servicio_id": None,
+        "fecha_reserva": None,
+        "estado": "inicio",
+        "consultas_iniciadas": 0,
+        "solicitudes_atendidas": 0,
+        "conversiones_realizadas": 0,
+        "servicio_principal": None,
+        "servicio_precio": None,
+        "tiempo_inicio_registro": None,
+        "tiempo_inicio_servicio": None,
+        "password": None,
+        "password_confirmacion": None
+    })
     
-    conversation_state = session['conversation_state']
     servicios = cargar_servicios()
     problemas_servicios = cargar_problemas_servicios()
     
@@ -381,7 +400,7 @@ def handle_message(message):
             'password': conversation_state["password"],
             'estado': 'inicio'
         }
-        response_usuario = requests.post(f'{API_URL}/usuarios', json=usuario_data)
+        response_usuario = requests.post(f'{RESERVAS_API_URL}/usuarios', json=usuario_data)
 
         if response_usuario.status_code == 200:
             conversation_state["usuario_id"] = response_usuario.json()['usuario']
@@ -391,7 +410,7 @@ def handle_message(message):
                 'modelo': conversation_state["modelo"],
                 'año': conversation_state["año"]
             }
-            response_vehiculo = requests.post(f'{API_URL}/vehiculos', json=vehiculo_data)
+            response_vehiculo = requests.post(f'{RESERVAS_API_URL}/vehiculos', json=vehiculo_data)
             if response_vehiculo.status_code == 200:
                 conversation_state["vehiculo_id"] = response_vehiculo.json()['vehiculo']
                 conversation_state["estado"] = "reservar_servicio"
@@ -536,7 +555,7 @@ def handle_message(message):
                 'problema': conversation_state["problema"],
                 'fecha_hora': fecha_hora_reserva.strftime('%Y-%m-%d %H:%M:%S')
             }
-            response = requests.post(f'{API_URL}/reservas', json=reserva_data)
+            response = requests.post(f'{RESERVAS_API_URL}/reservas', json=reserva_data)
 
             if response.status_code == 200:
                 slot.reservado = True
@@ -549,12 +568,24 @@ def handle_message(message):
                 )
                 db.session.add(nuevo_registro_servicio)
                 db.session.commit()
-                conversation_state["estado"] = "despedida"
-                conversation_state["solicitudes_atendidas"] += 1
-                conversation_state["conversiones_realizadas"] += 1
+
                 servicio_principal = Servicio.query.get(conversation_state["servicio_id"]).nombre
                 codigo_reserva = response.json()['reserva']
                 respuesta_bot = f"**Reserva creada exitosamente con código** {codigo_reserva} ✅ **para el servicio** '{servicio_principal}' **el** {fecha_hora_reserva.strftime('%Y-%m-%d a las %H:%M')}. **¿Necesitas algo más?** 😊"
+
+                # Enviar correo de confirmación
+                enviar_correo(
+                    destinatario=conversation_state["email"],
+                    asunto="Confirmación de Reserva de Servicio",
+                    contenido_html=f"""
+                    <p>Estimado/a {conversation_state['nombre_completo']},</p>
+                    <p>Tu reserva ha sido creada exitosamente con el código {codigo_reserva} para el servicio '{servicio_principal}' el {fecha_hora_reserva.strftime('%Y-%m-%d a las %H:%M')}.</p>
+                    <p>Gracias por confiar en nosotros.</p>
+                    <p>Saludos,</p>
+                    <p>Tu Centro de Servicios Automotriz</p>
+                    """
+                )
+
                 es_exitosa = True
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
                 session.pop('conversation_state', None)  # Eliminar estado de la sesión al finalizar
