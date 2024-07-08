@@ -14,7 +14,7 @@ from sendgrid.helpers.mail import Mail
 # Configuración de la API de OpenAI
 openai.api_key = os.getenv('API_KEY')
 
-RESERVAS_API_URL = os.getenv('API_URL')
+RESERVAS_API_URL = os.getenv('RESERVAS_API_URL')
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 # Función para enviar un correo electrónico
