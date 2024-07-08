@@ -36,6 +36,7 @@ def create_app(config_name):
     app.config['SESSION_KEY_PREFIX'] = os.getenv('SESSION_KEY_PREFIX')
     app.config['SESSION_USE_SIGNER'] = os.getenv('SESSION_USE_SIGNER') == 'True'
     app.config['SESSION_PERMANENT'] = os.getenv('SESSION_PERMANENT') == 'True'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'supersecretkey')
     Session(app)
 
     db.init_app(app)
@@ -93,4 +94,3 @@ if __name__ == '__main__':
     print(f"Configuración utilizada: {config_name}")
     app = create_app(config_name)
     app.run(debug=True)
-
