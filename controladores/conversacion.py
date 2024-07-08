@@ -31,7 +31,7 @@ def enviar_correo(destinatario, asunto, contenido_html):
         print(response.body)
         print(response.headers)
     except Exception as e:
-        print(e.message)
+        print(str(e))
 
 # Función para interactuar con OpenAI
 def interactuar_con_openai(consulta):
@@ -588,7 +588,8 @@ def handle_message(message):
 
                 es_exitosa = True
                 registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-                session.pop('conversation_state', None)  # Eliminar estado de la sesión al finalizar
+                conversation_state["estado"] = "despedida"
+                session['conversation_state'] = conversation_state  # Guardar estado en la sesión
                 return respuesta_bot
             else:
                 respuesta_bot = "❌ **Hubo un error al registrar tu reserva.** Por favor, intenta de nuevo."
