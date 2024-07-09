@@ -42,7 +42,7 @@ def interactuar_con_openai(consulta):
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": consulta}
             ],
-            max_tokens=150,
+            max_tokens=100,
             temperature=0.5,
         )
         return response.choices[0].message['content'].strip()
