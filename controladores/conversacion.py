@@ -110,15 +110,19 @@ def cargar_problemas_servicios():
     return problemas_servicios
 
 # Función para encontrar servicio basado en la consulta
-def encontrar_servicio(servicios, consulta):
+def encontrar_servicio(servicios, consulta, umbral_similitud=0.2):
     vectorizer = TfidfVectorizer()
     docs = list(servicios.values())
     tfidf_matrix = vectorizer.fit_transform(docs)
     consulta_vec = vectorizer.transform([preprocesar_texto(consulta)])
     similarities = cosine_similarity(consulta_vec, tfidf_matrix).flatten()
+    
     index = similarities.argmax()
-    servicio_principal = list(servicios.keys())[index]
-    return servicio_principal, similarities[index]
+    if similarities[index] >= umbral_similitud:
+        servicio_principal = list(servicios.keys())[index]
+        return servicio_principal, similarities[index]
+    else:
+        return None, 0
 
 # Función para encontrar problema basado en la consulta
 def encontrar_problema(problemas_servicios, consulta, umbral_similitud=0.2):
@@ -182,6 +186,7 @@ def generar_slots(servicio_id, fecha_inicio, fecha_fin):
         fecha_inicio += delta
 
 # Función para manejar los mensajes del usuario
+# Manejo del estado de la conversación
 def handle_message(message):
     global conversation_state
     conversation_state = session.get('conversation_state', {
@@ -208,20 +213,20 @@ def handle_message(message):
         "password": None,
         "password_confirmacion": None
     })
-    
+
     servicios = cargar_servicios()
     problemas_servicios = cargar_problemas_servicios()
-    
+
     es_exitosa = False
     UMBRAL_SIMILITUD = 0.2
-    
+
     if conversation_state["estado"] == "inicio" and message.strip() == '':
         respuesta_bot = "¡Hola! 👋 **Soy tu asistente para la reserva de servicios automotrices.** 🚗 ¿Cómo te puedo ayudar hoy?"
         es_exitosa = True
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         session['conversation_state'] = conversation_state  # Guardar estado en la sesión
         return respuesta_bot  # Devuelve cadena de texto
-    
+
     if conversation_state["estado"] == "inicio":
         conversation_state["estado"] = "solicitar_email"
         conversation_state["consultas_iniciadas"] += 1
@@ -443,10 +448,10 @@ def handle_message(message):
         conversation_state["problema"] = consulta
         conversation_state["tiempo_inicio_servicio"] = datetime.now()
 
-        problema, servicio_recomendado, similitud_problema = encontrar_problema(problemas_servicios, consulta)
-        servicio_principal, similitud_servicio = encontrar_servicio(servicios, consulta)
-        
-        if similitud_problema > similitud_servicio:
+        problema, servicio_recomendado, similitud_problema = encontrar_problema(problemas_servicios, consulta, umbral_similitud=UMBRAL_SIMILITUD)
+        servicio_principal, similitud_servicio = encontrar_servicio(servicios, consulta, umbral_similitud=UMBRAL_SIMILITUD)
+
+        if similitud_problema > similitud_servicio and similitud_problema >= UMBRAL_SIMILITUD:
             servicio = Servicio.query.filter_by(nombre=servicio_recomendado).first()
             if servicio:
                 conversation_state["servicio_principal"] = servicio.nombre
