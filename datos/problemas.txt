@@ -1,8 +1,8 @@
 mi carro no acelera bien y se aguanta pierde fuerza: Afinamiento de motor
-mi motor no responde bien y se aguanta: Afinamiento de motor
+el motor no responde bien y se aguanta: Afinamiento de motor
 aveces demora en arrancar no enciende rapido: Afinamiento de motor
 mi auto no tiene fuerza: Afinamiento de motor
-mi carro ha recorrido mucho y necesita servicio: Afinamiento de motor
+el carro ha recorrido mucho y necesita servicio: Afinamiento de motor
 veo el aceite sucio: Cambio de aceite
 mi carro tiene bajo nivel de aceite: Cambio de aceite
 el motor esta resumiendo aceite: Cambio de aceite
@@ -55,7 +55,7 @@ los faros traseros estan opacos: Revisión de luces de posición
 las luces de freno traseras no prenden: Revisión de luces de posición
 el liquido refrigerante esta sucio: Cambio de líquido refrigerante
 el nivel de refrigerante esta bajo: Cambio de líquido refrigerante
-el refrigerante esta negro y sucio: Cambio de líquido refrigerante
+recalienta el motor: Cambio de líquido refrigerante
 el motor se sobrecalienta: Cambio de líquido refrigerante
 el motor se calienta rapido: Cambio de líquido refrigerante
 siento duro el timon al girar: Revisión de dirección asistida
@@ -82,12 +82,12 @@ las luces intermitentes no prenden: Revisión de sistema eléctrico de luz alta
 las luces bajas no prenden: Revisión de sistema eléctrico de luz alta
 no tengo luces de faro: Revisión de sistema eléctrico de luz alta
 el foco delantero no enciende esta defectuoso: Revisión de sistema eléctrico de luz alta
-hay problemas electricos: Revisión de sistema eléctrico de luz alta
+luz alta no prende: Revisión de sistema eléctrico de luz alta
 la bateria se descarga muy rapido: Cambio de batería
 la bateria no retiene carga: Cambio de batería
-la bateria o el alternador no cargan: Cambio de batería
+la bateria tiene mucho tiempo no carga: Cambio de batería
 la bateria se descarga para el dia siguiente: Cambio de batería
-tengo problemas con bateria: Cambio de batería
+mi bateria se descarga rspido al prender los accesorios: Cambio de batería
 quiero revisar las luces: Revisión de sistema de iluminación
 los faros estan opacos: Revisión de sistema de iluminación
 necesito revisar las luces: Revisión de sistema de iluminación
@@ -119,14 +119,14 @@ hay ruidos en la admision: Cambio de filtro de combustible
 mi auto no arranca: Cambio de filtro de combustible
 hay olores a gasolina: Cambio de filtro de combustible
 no suben las lunas del piloto: Revisión de levantavidrios
-las lunas no suben: Revisión de levantavidrios
+la luna no sube: Revisión de levantavidrios
 el boton de lunas electricas no funciona: Revisión de levantavidrios
-hay ruidos al subir las lunas: Revisión de levantavidrios
+hay ruidos al subir la luna electrica: Revisión de levantavidrios
 necesito revisar las lunas: Revisión de levantavidrios
-los asientos no calientan: Revisión de asientos eléctricos
+el asiento no calientan: Revisión de asientos eléctricos
 necesito revisar los asientos: Revisión de asientos eléctricos
 los asientos no funcionan: Revisión de asientos eléctricos
-hay ruidos en los asientos: Revisión de asientos eléctricos
+hay ruidos ruido en los asientos asiento: Revisión de asientos eléctricos
 los asientos estan dañados: Revisión de asientos eléctricos
 el motor falla: Revisión de sistema de inyección
 hay ruidos en el motor: Revisión de sistema de inyección
@@ -140,18 +140,18 @@ el motor pierde potencia: Limpieza de inyectores
 el carro consume mucho combustible: Limpieza de inyectores
 el motor falla al arrancar: Revisión de sistema de encendido
 mi motor no arranca: Revisión de sistema de encendido
-mi motor no enciende: Revisión de sistema de encendido
+el motor no enciende: Revisión de sistema de encendido
 aveces no enciende: Revisión de sistema de encendido
 hay ruidos en el sistema de encendido: Revisión de sistema de encendido
 los cables de bujia estan desgastados: Cambio de cables de bujías
 el motor falla al arrancar: Cambio de cables de bujías
 mi motor no arranca: Cambio de cables de bujías
-mi motor no enciende: Cambio de cables de bujías
+el motor no enciende: Cambio de cables de bujías
 hay ruidos en el sistema de encendido: Cambio de cables de bujías
 siento golpes al pisar el freno: Revisión de sistema de frenos ABS
-el auto pierde traccion: Revisión de sistema de frenos ABS
-no cambia a 4x4: Revisión de sistema de frenos ABS
-hay ruidos al cambiar a 4x4: Revisión de sistema de frenos ABS
+el auto pierde frenado: Revisión de sistema de frenos ABS
+al pisar freno suena el pedal de freno: Revisión de sistema de frenos ABS
+hay ruidos en el frenado: Revisión de sistema de frenos ABS
 los frenos hidraulicos estan flojos: Revisión de sistema de frenos ABS
 el auto pierde traccion: Revisión de sistema de tracción
 no cambia a 4x4: Revisión de sistema de tracción
@@ -174,7 +174,7 @@ hay ruidos en las luces de emergencia: Revisión de luz de emergencia
 las luces de emergencia parpadean: Revisión de luz de emergencia
 las luces de emergencia no se apagan: Revisión de luz de emergencia
 no bota agua limpiaparabrisas: Revisión de bota de agua de limpiaparabrisas
-el limpiaparabrisas no funciona: Revisión de bota de agua de limpiaparabrisas
+el limpiaparabrisas no funciona no bota agua: Revisión de bota de agua de limpiaparabrisas
 hay ruidos en el limpiaparabrisas: Revisión de bota de agua de limpiaparabrisas
 el limpiaparabrisas no se mueve: Revisión de bota de agua de limpiaparabrisas
 el limpiaparabrisas esta roto: Revisión de bota de agua de limpiaparabrisas
@@ -203,10 +203,10 @@ el tubo de escape esta roto: Cambio de tubo de escape
 hay fuga en el tubo de escape: Cambio de tubo de escape
 el escape esta ruidoso: Cambio de tubo de escape
 hay olores en el escape: Cambio de tubo de escape
-el motor se sobrecalienta: Revisión de sistema de enfriamiento del motor
+el motor se recalienta rapido: Revisión de sistema de enfriamiento del motor
 hay fuga de agua en el sistema de enfriamiento: Revisión de sistema de enfriamiento del motor
 el motor se calienta rapido: Revisión de sistema de enfriamiento del motor
-pierde agua en el sistema de enfriamiento: Revisión de sistema de enfriamiento del motor
+pierde agua por las mangueras: Revisión de sistema de enfriamiento del motor
 el ventilador no funciona: Revisión de sistema de enfriamiento del motor
 quiero sacar copia de llave: Copia de llave sin chip
 se me perdio la llave: Copia de llave sin chip
@@ -227,7 +227,7 @@ la bateria no retiene carga: Revisión de alternador
 el alternador no carga: Revisión de alternador
 tengo problemas con alternador: Revisión de alternador
 hay ruidos en el alternador: Revisión de alternador
-el alternador no funciona: Revisión de alternador
+el alternador quiero reparar hacer mantenimiento: Revisión de alternador
 hay ruidos al arrancar: Revisión de sistema de arranque
 mi motor no enciende: Revisión de sistema de arranque
 el arrancador gira lento: Revisión de sistema de arranque
@@ -271,7 +271,7 @@ el motor pierde potencia: Diagnóstico electrónico
 el obturador falla necesito reparar: Limpieza de obturador
 necesito limpiar el reparar obturador: Limpieza de obturador
 el motor perdio minimo: Limpieza de obturador
-el obturador no responde: Limpieza de obturador
+el motor se apaga cuando esta en minimo o ralenti: Limpieza de obturador
 el motor se apaga en minimo: Limpieza de obturador
 los cables estan desgastados: Cambio de cableado general
 el cableado esta deteriorado: Cambio de cableado general
@@ -449,8 +449,8 @@ el sistema electrico no funciona: Revisión de cortocircuitos
 hay fallos en el sistema electrico: Revisión de cortocircuitos
 quiero revisar el sistema electrico: Revisión de cortocircuitos
 el radiador esta roto: Instalación y revisión de radiador
-hay fuga en el radiador: Instalación y revisión de radiador
-el radiador no funciona: Instalación y revisión de radiador
+hay fuga de agua por el radiador: Instalación y revisión de radiador
+el radiador tiene grietas: Instalación y revisión de radiador
 hay ruidos en el radiador: Instalación y revisión de radiador
 quiero revisar el radiador: Instalación y revisión de radiador
 hay ruidos en el motor: Revisión e inspección de sonidos de motor
@@ -542,18 +542,18 @@ necesito revisar el carburador: Reparación de carburador
 hay fallos en el carburador: Reparación de carburador
 necesito limpiar el obturador: Reparación de obturador
 el obturador falla necesito reparar: Reparación de obturador
-hay olores a gasolina: Reparación de obturador
-el obturador no responde: Reparación de obturador
-hay ruidos en el obturador: Reparación de obturador
-el obturador falla necesito reparar: Reparación de lunas eléctricas
-necesito limpiar el reparar obturador: Reparación de lunas eléctricas
-hay olores a gasolina: Reparación de lunas eléctricas
-el obturador no responde: Reparación de lunas eléctricas
-necesito limpiar el obturador: Reparación de lunas eléctricas
+no acelera: Reparación de obturador
+no mantiene minimo se apaga: Reparación de obturador
+al dejar de acelerar se apaga: Reparación de obturador
+la luna sube lento: Reparación de lunas eléctricas
+la luna electrica no sube: Reparación de lunas eléctricas
+no obedece el mando de la luna electrica: Reparación de lunas eléctricas
+la luna suena al subir: Reparación de lunas eléctricas
+necesito limpiar el accionador de luna electrica: Reparación de lunas eléctricas
 los asientos no funcionan: Reparación de asientos eléctricos
-hay ruidos en los asientos: Reparación de asientos eléctricos
-los asientos no responden: Reparación de asientos eléctricos
-necesito revisar los asientos: Reparación de asientos eléctricos
+hay ruidos en el asiento: Reparación de asientos eléctricos
+el asiento no se mueve: Reparación de asientos eléctricos
+necesito revisar el asiento: Reparación de asientos eléctricos
 hay fallos en los asientos: Reparación de asientos eléctricos
 
 
