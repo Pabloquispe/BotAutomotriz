@@ -1,4 +1,4 @@
-import openai
+eimport openai
 import requests
 import re
 import os
@@ -484,7 +484,7 @@ def handle_message(message):
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
-        elif confirmacion in ['si', 'ok', 'por supuesto', 'reservar el servicio', 'reservar', 'sí.', 'si.', 'esta bien', ' si esta bien', 'deseo proceder con la reserva de servicio', 'claro', 'reservar', 'procedo con la reserva', 'claro', 'reservar servicio', 'deseo reservar servicio']:
+        elif confirmacion in ['si', 'ok', 'por supuesto', 'reservar el servicio', 'reservar', 'sí.', 'si.', 'esta bien', ' si esta bien', 'deseo proceder con la reserva de servicio', 'claro', 'reservar', 'procedo con la reserva', 'claro', 'reservar este servicio', 'deseo reservar este servicio']:
             conversation_state["estado"] = "solicitar_fecha"
             respuesta_bot = "📅 **Por favor, proporciona la fecha para tu reserva (AAAA-MM-DD).**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
