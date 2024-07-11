@@ -613,9 +613,9 @@ def handle_message(message):
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session.pop('conversation_state', None)  # Eliminar estado de la sesión al finalizar
             return respuesta_bot  # Devuelve cadena de texto
-        #else:
-          #  conversation_state["estado"] = "reservar_servicio"
-           # respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
-           # registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-           # session['conversation_state'] = conversation_state  # Guardar estado en la sesión
-           # return respuesta_bot  # Devuelve cadena de texto
+        else:
+           conversation_state["estado"] = "reservar_servicio"
+           respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
+           registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
+           session['conversation_state'] = conversation_state  # Guardar estado en la sesión
+           return respuesta_bot  # Devuelve cadena de texto
