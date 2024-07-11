@@ -1,4 +1,4 @@
-eimport openai
+import openai
 import requests
 import re
 import os
