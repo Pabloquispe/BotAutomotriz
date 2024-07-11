@@ -608,14 +608,14 @@ def handle_message(message):
             return respuesta_bot
 
     elif conversation_state["estado"] == "despedida":
-        if message.strip().lower() in ['no', 'ninguna', 'gracias', 'nada', 'nada gracias', 'nada más']:
+        if message.strip().lower() in ['no', 'ninguna', 'gracias', 'nada', 'nada gracias', 'nada más', 'no gracias']:
             respuesta_bot = "**Muchas gracias, no dudes en escribirnos. Estamos para servirte.** 🙌"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session.pop('conversation_state', None)  # Eliminar estado de la sesión al finalizar
             return respuesta_bot  # Devuelve cadena de texto
-        else:
-            conversation_state["estado"] = "reservar_servicio"
-            respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
-            registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
-            session['conversation_state'] = conversation_state  # Guardar estado en la sesión
-            return respuesta_bot  # Devuelve cadena de texto
+        #else:
+          #  conversation_state["estado"] = "reservar_servicio"
+           # respuesta_bot = "🔧 **¿En qué más puedo ayudarte?**"
+           # registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
+           # session['conversation_state'] = conversation_state  # Guardar estado en la sesión
+           # return respuesta_bot  # Devuelve cadena de texto
