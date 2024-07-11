@@ -457,20 +457,20 @@ def handle_message(message):
                 conversation_state["servicio_principal"] = servicio.nombre
                 conversation_state["servicio_id"] = servicio.id
                 conversation_state["servicio_precio"] = servicio.precio
-                respuesta_bot = f"**Posible problema puede ser** '{servicio.nombre}' 🔧. **¿Deseas reservar este servicio,🛠️ Reservar otro servicio,💰 consultar precio o tienes una CONSULTA ESPECIFICA de servicios o problemas automotrices?** 🚗"
+                respuesta_bot = f"**Posible problema puede ser** '{servicio.nombre}' 🔧. **¿Deseas 🚗Reservar este servicio,🛠️ Reservar otro servicio,💰 Consultar precio 🚗o tienes una🔍 CONSULTA ESPECIFICA🔍 de servicios o problemas automotrices?** 🚗"
             else:
-                respuesta_bot = "❌ **El servicio que has solicitado no está disponible.** Por favor, elige otro servicio."
+                respuesta_bot = "❌ **El servicio que has solicitado no está disponible.** Por favor, elige 🛠️ otro servicio."
         elif similitud_servicio >= UMBRAL_SIMILITUD:
             servicio = Servicio.query.filter_by(nombre=servicio_principal).first()
             if servicio:
                 conversation_state["servicio_principal"] = servicio_principal
                 conversation_state["servicio_id"] = servicio.id
                 conversation_state["servicio_precio"] = servicio.precio
-                respuesta_bot = f"**Sí, tenemos el servicio de** '{servicio_principal}' 🔧. **¿Deseas reservar este servicio, 🛠️ Reservar otro servicio,💰 consultar precio o tienes una CONSULTA ESPECIFICA de servicios o problemas automotrices?** 🚗"
+                respuesta_bot = f"**Sí, tenemos el servicio de** '{servicio_principal}' 🔧. **¿Deseas 🚗 Reservar este servicio, 🛠️ Reservar otro servicio,💰 consultar precio 🚗o tienes una 🔍CONSULTA ESPECIFICA 🔍 de servicios o problemas automotrices?** 🚗"
             else:
-                respuesta_bot = "❌ **El servicio que has solicitado no está disponible.** Por favor, elige otro servicio."
+                respuesta_bot = "❌ **El servicio que has solicitado no está disponible.** Por favor, elige 🛠️ Reservar otro servicio."
         else:
-            respuesta_bot = "❌ **El servicio que has solicitado no está disponible.** Por favor, elige otro servicio."
+            respuesta_bot = "❌ **El servicio que has solicitado no está disponible.** Por favor, elige 🛠️ Reservar otro servicio."
 
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         conversation_state["estado"] = "confirmar_servicio"
@@ -480,7 +480,7 @@ def handle_message(message):
     elif conversation_state["estado"] == "confirmar_servicio":
         confirmacion = message.strip().lower()
         if "cuanto cuesta" in confirmacion or "costo" in confirmacion or "precio" in confirmacion:
-            respuesta_bot = f"💰 **El servicio** '{conversation_state['servicio_principal']}' **tiene un costo de** {conversation_state['servicio_precio']} **soles. ¿Deseas reservar este servicio, 🛠️Reservar otro servicio 🔍 o tienes una CONSULTA ESPECIFICA de servicios o problemas automotrices?**"
+            respuesta_bot = f"💰 **El servicio** '{conversation_state['servicio_principal']}' **tiene un costo de** {conversation_state['servicio_precio']} **soles. ¿Deseas 🚗 Reservar este servicio, 🛠️Reservar otro servicio 🔍 o tienes una CONSULTA ESPECIFICA 🔍de servicios o problemas automotrices?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
@@ -503,7 +503,7 @@ def handle_message(message):
             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
         else:
-            respuesta_bot = "❌ **No entiendo tu respuesta. Por favor, elige una opción: reservar el servicio,🛠️ Reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
+            respuesta_bot = "❌ **No entiendo tu respuesta. Por favor, elige una opción:🔧 Reservar el servicio,🛠️ Reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
