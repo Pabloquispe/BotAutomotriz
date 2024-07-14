@@ -314,9 +314,9 @@ hay problemas electricos en la direccion: Revisión de sistema de frenos hidráu
 los frenos no responden: Revisión de sistema de frenos hidráulicos
 hay fuga en el sistema de frenos: Revisión de sistema de frenos hidráulicos
 tengo problemas con el gps: Instalación e inspección de GPS
-el gps no funciona: Instalación e inspección de GPS
-hay ruidos en el gps: Instalación e inspección de GPS
-el gps no responde: Instalación e inspección de GPS
+el gps quiero revisar: Instalación e inspección de GPS
+quiero instalar gps: Instalación e inspección de GPS
+el gps necesito instalacion: Instalación e inspección de GPS
 necesito instalar gps: Instalación e inspección de GPS
 necesito pintar mi auto: Servicio de pintura
 hay rayaduras en la pintura: Servicio de pintura
@@ -418,9 +418,9 @@ hay ruidos en la camara de reversa: Revisión de sistema de cámara de reversa
 la camara de reversa no responde: Revisión de sistema de cámara de reversa
 necesito revisar la camara de reversa: Revisión de sistema de cámara de reversa
 la camara de reversa esta rota: Revisión de sistema de cámara de reversa
-hay ruidos en la alarma: Instalación y revisión de alarma
-la alarma no funciona: Instalación y revisión de alarma
-la alarma no responde: Instalación y revisión de alarma
+tiene servicio de instalacion de alarma: Instalación y revisión de alarma
+la alarma no funciona bien: Instalación y revisión de alarma
+quiero instalacion de alarma: Instalación y revisión de alarma
 necesito revisar la alarma: Instalación y revisión de alarma
 quiero instalar una alarma: Instalación y revisión de alarma
 necesito instalar sensores: Revisión de sistema de sensores de estacionamiento
