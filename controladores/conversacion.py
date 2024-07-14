@@ -480,7 +480,7 @@ def handle_message(message):
     elif conversation_state["estado"] == "confirmar_servicio":
         confirmacion = message.strip().lower()
         if "cuanto cuesta" in confirmacion or "costo" in confirmacion or "precio" in confirmacion:
-            respuesta_bot = f"💰 **El servicio** '{conversation_state['servicio_principal']}' **tiene un costo de** {conversation_state['servicio_precio']} **soles. ¿Deseas 🚗 Reservar este servicio, 🛠️Reservar otro servicio 🔍 o tienes una CONSULTA ESPECIFICA 🔍de servicios o problemas automotrices?**"
+            respuesta_bot = f"💰 **El servicio** '{conversation_state['servicio_principal']}' **tiene un costo de** {conversation_state['servicio_precio']} **soles. ¿Deseas 🚗 Reservar este servicio, 🛠️Reservar otro servicio  o tienes una 🔍CONSULTA ESPECIFICA 🔍de servicios o problemas automotrices?**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
@@ -503,7 +503,7 @@ def handle_message(message):
             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
         else:
-            respuesta_bot = "❌ **No entiendo tu respuesta. Por favor, elige una opción:🔧 Reservar el servicio,🛠️ Reservar otro servicio, o 🔍 CONSULTA ESPECIFICA.**"
+            respuesta_bot = "❌ **No entiendo tu respuesta. Por favor, elige una opción:🔧 Reservar el servicio,🛠️ Reservar otro servicio, o 🔍CONSULTA ESPECIFICA 🔍.**"
             registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
             session['conversation_state'] = conversation_state  # Guardar estado en la sesión
             return respuesta_bot  # Devuelve cadena de texto
@@ -511,7 +511,7 @@ def handle_message(message):
     elif conversation_state["estado"] == "interactuar_con_openai":
         consulta = message.strip().lower()
         respuesta_openai = interactuar_con_openai(consulta)
-        respuesta_bot = f"ℹ️ {respuesta_openai}. ¿💡Hay algo más que quieras saber o deseas proceder con 🚗Reservar el servicio🛠️ '{conversation_state['servicio_principal']}'? 🚗"
+        respuesta_bot = f"ℹ️ {respuesta_openai}. ¿💡Hay algo más que quieras saber🔍CONSULTA ESPECIFICA 🔍 o deseas proceder con 🚗Reservar el servicio🛠️ '{conversation_state['servicio_principal']}'? 🚗"
         registrar_interaccion(conversation_state["usuario_id"], message, respuesta_bot, es_exitosa)
         conversation_state["estado"] = "confirmar_servicio"
         session['conversation_state'] = conversation_state  # Guardar estado en la sesión
