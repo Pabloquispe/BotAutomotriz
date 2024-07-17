@@ -9,6 +9,7 @@ from controladores.user_routes import user_bp
 from controladores.auth_routes import auth_bp
 from controladores.main_routes import main_bp
 from controladores.routes import register_routes
+from controladores.chatbot_logic import chat
 import logging
 from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
